@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Active Disasters | Serve Source</title>
+<meta name="description" content="Live monitoring and active disaster response from Serve Source partners.">
+<link rel="icon" href="assets/img/logo.png">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/disasters.css">
+<script src="assets/js/theme.js"></script>
+</head>
+<body>
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <h1>Active Disasters</h1>
+      <p class="lede">Live monitoring, active events, and response activity from trusted partners.</p>
+      <div class="counts">
+        <span class="count-chip"><b data-stat="active_disaster_events">20</b> Active Disaster Events</span>
+        <span class="count-chip"><b data-stat="disaster_events_being_assessed">1</b> Being Assessed</span>
+        <span class="count-chip"><b data-stat="active_monitoring_events">—</b> Monitoring Events</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Monitoring -->
+  <section class="section-tight" id="live">
+    <div class="wrap">
+      <div class="block-head">
+        <span class="icon-chip" data-icon="radar"></span>
+        <h2>Live Monitoring</h2>
+      </div>
+      <div class="live-grid" id="live-feeds"></div>
+    </div>
+  </section>
+
+  <!-- Monitoring Events -->
+  <section class="section-tight alt-band" id="monitoring">
+    <div class="wrap">
+      <div class="block-head">
+        <span class="icon-chip teal" data-icon="eye"></span>
+        <h2>Monitoring Events</h2>
+        <span class="pill monitoring"><span data-stat="active_monitoring_events">—</span>&nbsp;Active Events</span>
+        <span class="muted small" id="mon-updated"></span>
+        <span class="spacer"></span>
+        <button class="btn btn-tint btn-sm" id="mon-collapse" aria-expanded="true" aria-controls="mon-body"><span data-icon="chevronUp"></span><span>Hide</span></button>
+      </div>
+      <div id="mon-body">
+        <div class="seg" id="mon-filter" role="group" aria-label="Filter monitoring events"></div>
+        <ul class="mon-list" id="mon-list"></ul>
+        <div class="center-row"><button class="btn btn-outline" id="mon-more" hidden>Show More Monitoring Events</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Disaster Events -->
+  <section class="section-tight" id="events">
+    <div class="wrap">
+      <div class="block-head">
+        <span class="icon-chip orange" data-icon="alert"></span>
+        <h2>Disaster Events</h2>
+      </div>
+      <div class="d-tools">
+        <label class="search"><span data-icon="search"></span><input type="search" id="d-search" placeholder="Search by name or region" aria-label="Search disasters by name or region"></label>
+        <div class="seg" id="d-status" role="group" aria-label="Filter by status"></div>
+      </div>
+      <div class="d-grid" id="d-grid" aria-live="polite"></div>
+      <p class="empty-note" id="d-empty" hidden>No disasters match your search.</p>
+      <div class="center-row"><button class="btn btn-outline" id="d-more" hidden>Load More Disasters</button></div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/core.js"></script>
+<script src="assets/js/disasters.js"></script>
+</body>
+</html>

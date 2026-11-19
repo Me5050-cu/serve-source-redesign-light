@@ -1,0 +1,215 @@
+/* Serve Source lettering: one type system for both directions (Civic and Cinema).
+   Cinema's lettering (Barlow Semi Condensed display, a sentence-case kicker, condensed caps labels, headline
+   accent words set as a weight change, tabular data figures) translated into the v1.4 web scale
+   (BRANDING_DESIGN_SYSTEM_REFINED v1.4 §7, owner review 2026-11-05):
+     H1 60/36 lh1.1 700-800 · H2 36/30 lh1.2 700 · H3 24/20 lh1.3 600-700 · body 16/1.6 · small 14/1.5
+     label 12/600 · button 14/600 · caption 11-12 · impact numbers 56-96 / 40-64, 800-900, lh .95
+   Desktop is >= 1024px, phone <= 640px; between them every size interpolates linearly (exact at both ends).
+
+   Loaded by assets/js/theme.js after site.css and before colorways.css and the direction's stylesheet.
+   Two faces, switched with ?type=<system|barlow> (remembered in localStorage "ss-type"):
+     html[data-type=system]  DEFAULT, the guide's website rule: the system stack for everything, no web font.
+     html[data-type=barlow]  Barlow Semi Condensed for display, headings, labels and numbers; Barlow for body.
+                             Cinema's original lettering and the brand's print headline face. theme.js injects the
+                             Google Fonts link only in this mode. Expected to fail only brandcheck's font rules.
+   Sizes are identical in both modes (they are the guide's caps); weights, tracking and figure style are tuned
+   per face (the system face is wider and heavier, so it is tracked tighter at display sizes).
+
+   TOKENS (directions read these; they never re-declare them)
+     Faces     --ss-font-system  --ss-font-display  --ss-font-body  --ss-font-label  --ss-font-numeric
+     Sizes     --ss-fs-h1 --ss-fs-h2 --ss-fs-h3 --ss-fs-h4 --ss-fs-lede --ss-fs-body --ss-fs-small --ss-fs-ui
+               --ss-fs-kicker --ss-fs-label --ss-fs-button --ss-fs-caption --ss-fs-fine
+               --ss-fs-stat-xl --ss-fs-stat --ss-fs-figure --ss-fs-brand
+     Weights   --ss-fw-h1 --ss-fw-h2 --ss-fw-h3 --ss-fw-em --ss-fw-body --ss-fw-strong --ss-fw-ui --ss-fw-button
+               --ss-fw-label --ss-fw-kicker --ss-fw-stat --ss-fw-figure
+     Leading   --ss-lh-h1 --ss-lh-h2 --ss-lh-h3 --ss-lh-h4 --ss-lh-lede --ss-lh-body --ss-lh-small --ss-lh-ui
+               --ss-lh-label --ss-lh-button --ss-lh-caption --ss-lh-stat
+     Tracking  --ss-ls-h1 --ss-ls-h2 --ss-ls-h3 --ss-ls-h4 --ss-ls-body --ss-ls-ui --ss-ls-button --ss-ls-label
+               --ss-ls-kicker --ss-ls-stat --ss-ls-figure --ss-ls-caption
+     Case      --ss-tt-label (uppercase)  --ss-tt-kicker (none: as authored)  --ss-tt-button (none)
+     Figures   --ss-num-data (tabular lining: counts, dates, meta, tables)  --ss-num-stat (impact numbers)
+     Shorthands (use with the font property, then set letter-spacing / text-transform from the tokens above):
+               --ss-type-h1 --ss-type-h2 --ss-type-h3 --ss-type-h4 --ss-type-lede --ss-type-body --ss-type-small
+               --ss-type-ui --ss-type-kicker --ss-type-label --ss-type-button --ss-type-caption
+               --ss-type-stat-xl --ss-type-stat --ss-type-figure
+               e.g.  .hero h1 { font: var(--ss-type-h1); letter-spacing: var(--ss-ls-h1); }
+   ROLE CLASSES (zero specificity, for theme JS or wrappers): .ss-h1 .ss-h2 .ss-h3 .ss-lede .ss-small .ss-kicker
+               .ss-label .ss-button .ss-caption .ss-stat .ss-stat-xl .ss-figure .ss-num
+   ELEMENT DEFAULTS below: body, h1-h4 (+ the em rule), strong, form controls, balanced headline wrapping and
+               pretty paragraph wrapping. They beat site.css's element rules and lose to any class rule.
+
+   Brandcheck notes: an h1/h2/h3 must use its own size token (no hero-only or display-only sizes past the caps);
+   any numeral at 28px or more is judged as an impact number (>= 40 phone / 56 desktop, 800+, orange on a white
+   card), so data figures stay at --ss-fs-figure (24px). --ss-fs-lede is 18px on desktop: brandcheck lists it
+   under type.lede (the scale has no lede size) for the owner to judge; set ledes to --ss-type-body to silence it. */
+
+:root,
+:root[data-type="system"] {
+  --ss-font-system: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ss-font-display: var(--ss-font-system);
+  --ss-font-body: var(--ss-font-system);
+  --ss-font-label: var(--ss-font-system);
+  --ss-font-numeric: var(--ss-font-system);
+
+  /* sizes: identical in both modes */
+  --ss-fs-h1: clamp(36px, calc(6.25vw - 4px), 60px);            /* 36 at <=640, 60 at >=1024 */
+  --ss-fs-h2: clamp(30px, calc(1.5625vw + 20px), 36px);         /* 30 / 36 */
+  --ss-fs-h3: clamp(20px, calc(1.0417vw + 13.333px), 24px);     /* 20 / 24 */
+  --ss-fs-h4: 18px;
+  --ss-fs-lede: clamp(16px, calc(.5208vw + 12.667px), 18px);    /* 16 / 18 */
+  --ss-fs-body: 16px;
+  --ss-fs-small: 14px;
+  --ss-fs-ui: 15px;                                             /* nav, tabs, menu rows */
+  --ss-fs-kicker: 14px;
+  --ss-fs-label: 12px;
+  --ss-fs-button: 14px;
+  --ss-fs-caption: 12px;
+  --ss-fs-fine: 11px;                                           /* timestamps, photo credits only */
+  --ss-fs-stat-xl: clamp(48px, calc(8.3333vw - 5.333px), 80px); /* hero impact numbers: 48 / 80 */
+  --ss-fs-stat: clamp(40px, calc(4.1667vw + 13.333px), 56px);   /* impact numbers in cards: 40 / 56 */
+  --ss-fs-figure: 24px;                                         /* data figures that are not impact numbers */
+  --ss-fs-brand: 18px;                                          /* the "Serve Source" wordmark text in header/footer */
+
+  /* system face: weights */
+  --ss-fw-h1: 700;
+  --ss-fw-h2: 700;
+  --ss-fw-h3: 600;
+  --ss-fw-h4: 600;
+  --ss-fw-em: 400;               /* headline accent words: a weight change, never italic, never a colour change here */
+  --ss-fw-body: 400;
+  --ss-fw-strong: 600;
+  --ss-fw-ui: 500;
+  --ss-fw-button: 600;
+  --ss-fw-label: 600;
+  --ss-fw-kicker: 600;
+  --ss-fw-stat: 800;
+  --ss-fw-figure: 700;
+
+  /* leading (the guide's values; the button keeps 1.2 so a wrapped label on a phone does not collide) */
+  --ss-lh-h1: 1.1;
+  --ss-lh-h2: 1.2;
+  --ss-lh-h3: 1.3;
+  --ss-lh-h4: 1.35;
+  --ss-lh-lede: 1.6;
+  --ss-lh-body: 1.6;
+  --ss-lh-small: 1.5;
+  --ss-lh-ui: 1.25;
+  --ss-lh-label: 1.4;
+  --ss-lh-button: 1.2;
+  --ss-lh-caption: 1.3;
+  --ss-lh-stat: .95;
+
+  /* system face: tracking. San Francisco / Segoe / Roboto are wide at display sizes, so tighten as size grows. */
+  --ss-ls-h1: -.022em;
+  --ss-ls-h2: -.016em;
+  --ss-ls-h3: -.008em;
+  --ss-ls-h4: -.004em;
+  --ss-ls-body: 0;
+  --ss-ls-ui: 0;
+  --ss-ls-button: .005em;
+  --ss-ls-label: .08em;
+  --ss-ls-kicker: 0;
+  --ss-ls-stat: -.035em;
+  --ss-ls-figure: -.01em;
+  --ss-ls-caption: .005em;
+
+  /* case and figures */
+  --ss-tt-label: uppercase;
+  --ss-tt-kicker: none;
+  --ss-tt-button: none;
+  --ss-num-data: tabular-nums lining-nums;
+  --ss-num-stat: proportional-nums lining-nums;   /* SF's tabular "1" leaves a hole at 80px; stats stand alone */
+}
+
+:root[data-type="barlow"] {
+  --ss-font-display: "Barlow Semi Condensed", "Barlow", var(--ss-font-system);
+  --ss-font-body: "Barlow", var(--ss-font-system);
+  --ss-font-label: "Barlow Semi Condensed", "Barlow", var(--ss-font-system);
+  --ss-font-numeric: "Barlow Semi Condensed", "Barlow", var(--ss-font-system);
+
+  /* Barlow Semi Condensed is light on the page: Bold where the system face is Bold, SemiBold for H3 */
+  --ss-fw-h1: 700;
+  --ss-fw-h2: 700;
+  --ss-fw-h3: 600;
+  --ss-fw-h4: 600;
+  --ss-fw-em: 400;
+  --ss-fw-ui: 500;
+  --ss-fw-stat: 800;
+  --ss-fw-figure: 600;
+
+  /* the condensed DIN-lineage face needs almost no tightening; labels open up a touch less */
+  --ss-ls-h1: -.008em;
+  --ss-ls-h2: -.005em;
+  --ss-ls-h3: 0;
+  --ss-ls-h4: 0;
+  --ss-ls-ui: .01em;
+  --ss-ls-button: .02em;
+  --ss-ls-label: .07em;
+  --ss-ls-kicker: .005em;
+  --ss-ls-stat: -.015em;
+  --ss-ls-figure: 0;
+  --ss-ls-caption: .01em;
+  --ss-num-stat: tabular-nums lining-nums;      /* Barlow's figures are proportional by default; Cinema verified tnum */
+}
+
+/* shorthands. They resolve on :root (where the face switch lives), so a direction that needs a different size
+   for one element sets font-size after the shorthand rather than re-declaring an --ss-fs-* token. */
+:root {
+  --ss-type-h1: var(--ss-fw-h1) var(--ss-fs-h1)/var(--ss-lh-h1) var(--ss-font-display);
+  --ss-type-h2: var(--ss-fw-h2) var(--ss-fs-h2)/var(--ss-lh-h2) var(--ss-font-display);
+  --ss-type-h3: var(--ss-fw-h3) var(--ss-fs-h3)/var(--ss-lh-h3) var(--ss-font-display);
+  --ss-type-h4: var(--ss-fw-h4) var(--ss-fs-h4)/var(--ss-lh-h4) var(--ss-font-display);
+  --ss-type-lede: var(--ss-fw-body) var(--ss-fs-lede)/var(--ss-lh-lede) var(--ss-font-body);
+  --ss-type-body: var(--ss-fw-body) var(--ss-fs-body)/var(--ss-lh-body) var(--ss-font-body);
+  --ss-type-small: var(--ss-fw-body) var(--ss-fs-small)/var(--ss-lh-small) var(--ss-font-body);
+  --ss-type-ui: var(--ss-fw-ui) var(--ss-fs-ui)/var(--ss-lh-ui) var(--ss-font-body);
+  --ss-type-kicker: var(--ss-fw-kicker) var(--ss-fs-kicker)/var(--ss-lh-label) var(--ss-font-display);
+  --ss-type-label: var(--ss-fw-label) var(--ss-fs-label)/var(--ss-lh-label) var(--ss-font-label);
+  --ss-type-button: var(--ss-fw-button) var(--ss-fs-button)/var(--ss-lh-button) var(--ss-font-body);
+  --ss-type-caption: var(--ss-fw-body) var(--ss-fs-caption)/var(--ss-lh-caption) var(--ss-font-body);
+  --ss-type-stat-xl: var(--ss-fw-stat) var(--ss-fs-stat-xl)/var(--ss-lh-stat) var(--ss-font-numeric);
+  --ss-type-stat: var(--ss-fw-stat) var(--ss-fs-stat)/var(--ss-lh-stat) var(--ss-font-numeric);
+  --ss-type-figure: var(--ss-fw-figure) var(--ss-fs-figure)/1.1 var(--ss-font-numeric);
+
+  /* the shared base's older names follow the lettering */
+  --font: var(--ss-font-body);
+  --font-display: var(--ss-font-display);
+  --font-mono: var(--ss-font-numeric);
+  --font-accent: var(--ss-font-display);
+}
+
+/* ---------- element defaults ---------- */
+body {
+  font: var(--ss-type-body);
+  letter-spacing: var(--ss-ls-body);
+  font-kerning: normal;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+h1 { font: var(--ss-type-h1); letter-spacing: var(--ss-ls-h1); }
+h2 { font: var(--ss-type-h2); letter-spacing: var(--ss-ls-h2); }
+h3 { font: var(--ss-type-h3); letter-spacing: var(--ss-ls-h3); }
+h4 { font: var(--ss-type-h4); letter-spacing: var(--ss-ls-h4); }
+h1, h2, h3, h4 { text-wrap: balance; font-variant-numeric: lining-nums; }
+:is(h1, h2, h3, h4) em { font-style: normal; font-weight: var(--ss-fw-em); }
+p, li, dd, blockquote, figcaption { text-wrap: pretty; }
+strong, b { font-weight: var(--ss-fw-strong); }
+button, input, select, textarea { font-family: var(--ss-font-body); letter-spacing: var(--ss-ls-body); }
+time, kbd { font-variant-numeric: var(--ss-num-data); }
+
+/* ---------- role classes (zero specificity) ---------- */
+:where(.ss-h1) { font: var(--ss-type-h1); letter-spacing: var(--ss-ls-h1); text-wrap: balance; }
+:where(.ss-h2) { font: var(--ss-type-h2); letter-spacing: var(--ss-ls-h2); text-wrap: balance; }
+:where(.ss-h3) { font: var(--ss-type-h3); letter-spacing: var(--ss-ls-h3); text-wrap: balance; }
+:where(.ss-lede) { font: var(--ss-type-lede); letter-spacing: var(--ss-ls-body); text-wrap: pretty; }
+:where(.ss-small) { font: var(--ss-type-small); letter-spacing: var(--ss-ls-body); }
+:where(.ss-kicker) { font: var(--ss-type-kicker); letter-spacing: var(--ss-ls-kicker); text-transform: var(--ss-tt-kicker); }
+:where(.ss-label) { font: var(--ss-type-label); letter-spacing: var(--ss-ls-label); text-transform: var(--ss-tt-label); }
+:where(.ss-button) { font: var(--ss-type-button); letter-spacing: var(--ss-ls-button); text-transform: var(--ss-tt-button); }
+:where(.ss-caption) { font: var(--ss-type-caption); letter-spacing: var(--ss-ls-caption); }
+:where(.ss-stat-xl) { font: var(--ss-type-stat-xl); letter-spacing: var(--ss-ls-stat); font-variant-numeric: var(--ss-num-stat); }
+:where(.ss-stat) { font: var(--ss-type-stat); letter-spacing: var(--ss-ls-stat); font-variant-numeric: var(--ss-num-stat); }
+:where(.ss-figure) { font: var(--ss-type-figure); letter-spacing: var(--ss-ls-figure); font-variant-numeric: var(--ss-num-data); }
+:where(.ss-num) { font-variant-numeric: var(--ss-num-data); }

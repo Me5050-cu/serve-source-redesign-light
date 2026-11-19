@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Disaster Detail | Serve Source</title>
+<link rel="icon" href="assets/img/logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/directory.css">
+<link rel="stylesheet" href="assets/css/disaster.css">
+<script src="assets/js/theme.js"></script>
+</head>
+<body>
+<main>
+  <!-- Header band -->
+  <section class="dz-hero">
+    <img class="dz-hero-bg" id="hero-img" alt="">
+    <div class="wrap dz-hero-inner">
+      <a class="back" href="disasters.html"><span data-icon="chevronRight" class="flip"></span>Back to Disasters</a>
+      <div class="dz-title">
+        <img class="dz-type" id="type-icon" alt="" hidden>
+        <div>
+          <div id="status-pill"></div>
+          <h1 id="d-name">Loading…</h1>
+        </div>
+      </div>
+      <div class="dz-meta">
+        <span><span data-icon="pin"></span><span id="d-regions"></span></span>
+        <span><span data-icon="calendar"></span><span id="d-date"></span></span>
+        <span><span data-icon="clock"></span><span id="d-updated"></span></span>
+      </div>
+      <div class="dz-tools">
+        <button class="chip" id="copy-link"><span data-icon="link"></span><span>Copy share link</span></button>
+        <button class="chip" id="pray-top"><span data-icon="hands"></span><span><b data-count="0" id="pray-count"></b> People Praying</span></button>
+        <a class="chip" id="press-link" hidden target="_blank" rel="noopener"><span data-icon="file"></span><span>Press Release</span></a>
+      </div>
+      <span class="photo-credit" id="photo-credit"></span>
+    </div>
+  </section>
+
+  <div class="wrap dz-body">
+    <!-- Phases -->
+    <ol class="phases" id="phases" aria-label="Disaster phase">
+      <li data-step="0"><b>Monitoring</b><span>Tracking conditions and early reports</span></li>
+      <li data-step="1"><b>Assessment</b><span>Evaluating needs and damage</span></li>
+      <li data-step="2"><b>Response</b><span>Providing immediate relief and assistance</span></li>
+      <li data-step="3"><b>Long-Term Recovery</b><span>Rebuilding and ongoing support</span></li>
+    </ol>
+
+    <!-- Action buttons -->
+    <div class="dz-actions" id="actions"></div>
+
+    <!-- About -->
+    <section class="panel" id="about-panel">
+      <div class="panel-head"><span class="icon-chip soft" data-icon="info"></span><h2>About This Disaster</h2></div>
+      <div class="prose collapsible" id="about"></div>
+    </section>
+
+    <!-- Local resources -->
+    <section class="panel" id="resources-panel" hidden>
+      <div class="panel-head"><span class="icon-chip soft" data-icon="life"></span><h2>Local Resources</h2></div>
+      <div class="prose collapsible" id="local-resources"></div>
+    </section>
+
+    <!-- Live updates -->
+    <section class="panel" id="videos-panel" hidden>
+      <div class="panel-head"><span class="icon-chip soft" data-icon="play"></span><h2>Live Updates</h2></div>
+      <div class="video-grid" id="videos"></div>
+    </section>
+
+    <!-- Map + filters -->
+    <div class="split" id="map-section">
+      <section class="panel map-panel">
+        <div class="panel-head wrap-row">
+          <span class="icon-chip soft" data-icon="map"></span><h2>Response Locations</h2>
+          <dl class="mini-stats" id="mini-stats"></dl>
+        </div>
+        <div class="layers" id="layers" role="group" aria-label="Map layers"></div>
+        <div id="map" class="map-box" role="region" aria-label="Response map"></div>
+      </section>
+      <aside class="panel filter-panel">
+        <div class="panel-head"><span class="icon-chip soft" data-icon="filter"></span><h2>Filter Map &amp; Organizations List</h2></div>
+        <label class="search small-search"><span data-icon="search"></span><input type="search" id="f-search" placeholder="Search organizations or cities" aria-label="Search organizations or cities"></label>
+        <fieldset><legend>Organization Type</legend><div class="checks-list" id="f-orgtype"></div></fieldset>
+        <fieldset><legend>Service Type</legend><div class="checks-list two" id="f-service"></div></fieldset>
+        <div class="filter-foot">
+          <button class="btn btn-tint btn-sm" id="f-reset">Reset</button>
+          <button class="btn btn-outline btn-sm" id="f-copy"><span data-icon="link"></span>Copy Filtered Link</button>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Responses + sidebar -->
+    <div class="split" id="list-section">
+      <section>
+        <div class="list-head">
+          <h2 id="list-title">Response Locations by verified organizations</h2>
+          <p class="muted">Explore organizations serving in response to this disaster. The map and list show the same filtered response activity, including locations, services, dates, and links to learn more. Services and volunteer opportunities may change, so please contact each organization directly to confirm current availability.</p>
+        </div>
+        <ul class="responses" id="responses"></ul>
+      </section>
+      <aside class="side">
+        <div class="side-card pray">
+          <span class="icon-chip" data-icon="hands"></span>
+          <h3>Commit to Praying</h3>
+          <p>Pray for those impacted and those assisting with response efforts.</p>
+          <button class="btn btn-light" id="pray-side">I’m Praying</button>
+        </div>
+        <div class="side-card navy">
+          <span class="icon-chip" data-icon="building"></span>
+          <h3>Is Your Organization Responding to this Disaster?</h3>
+          <p>Help survivors and volunteers find your response by adding your organization’s deployment details.</p>
+          <a class="btn btn-light" id="add-response" target="_blank" rel="noopener"><span data-icon="plus"></span>Add Response</a>
+        </div>
+        <div class="side-card orange">
+          <span class="icon-chip" data-icon="file"></span>
+          <h3>Submit Community Report</h3>
+          <p>Help organizations and churches know where to respond by letting our team know of an area impacted by the recent disaster.</p>
+          <a class="btn btn-light" id="impact-report" target="_blank" rel="noopener">Impact Report</a>
+        </div>
+        <div class="side-card plain">
+          <span class="icon-chip soft" data-icon="heart"></span>
+          <h3>Get Involved</h3>
+          <p>Pray, give, and serve alongside the organizations responding to this disaster.</p>
+          <a class="btn btn-primary" href="https://app.servesource.org/get-involved" target="_blank" rel="noopener">Get Involved</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/directory.js"></script>
+<script src="assets/js/disaster.js"></script>
+</body>
+</html>

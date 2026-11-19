@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Organizations | Serve Source</title>
+<meta name="description" content="Churches, nonprofits, and community partners in the Serve Source network.">
+<link rel="icon" href="assets/img/logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/directory.css">
+<script src="assets/js/theme.js"></script>
+</head>
+<body>
+<main>
+  <section class="page-hero">
+    <div class="wrap hero-row">
+      <div>
+        <h1>Organizations</h1>
+        <p class="lede" id="org-count">Loading organizations…</p>
+      </div>
+      <a class="btn btn-dark" href="https://app.servesource.org/GetStarted" target="_blank" rel="noopener"><span data-icon="building"></span>Register Organization</a>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="wrap">
+      <div id="map" class="map-box wide" role="region" aria-label="Organization map"></div>
+      <p class="map-note"><span data-icon="pin"></span><span id="map-note"></span></p>
+
+      <div class="org-tools">
+        <label class="search"><span data-icon="search"></span><input type="search" id="f-search" placeholder="Search organizations" aria-label="Search organizations"></label>
+        <button class="btn btn-light filter-toggle" id="f-toggle" aria-expanded="false" aria-controls="f-drawer"><span data-icon="sliders"></span>Filters<span class="filter-count" id="f-count" hidden></span></button>
+      </div>
+      <div class="filter-drawer" id="f-drawer" hidden>
+        <fieldset><legend>Organization Type</legend><div class="chip-set" id="f-type"></div></fieldset>
+        <fieldset><legend>Category</legend><div class="chip-set" id="f-tags"></div></fieldset>
+        <fieldset><legend>Community Network</legend><select class="select narrow" id="f-network" aria-label="Community network"><option value="">All networks</option></select></fieldset>
+        <div class="filter-foot"><button class="btn btn-tint btn-sm" id="f-reset">Clear filters</button></div>
+      </div>
+
+      <ul class="org-grid" id="orgs" aria-live="polite"></ul>
+      <div class="center-row"><button class="btn btn-outline" id="more" hidden>Show More</button></div>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/directory.js"></script>
+<script src="assets/js/organizations.js"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+/* Disaster detail page */
+.dz-hero { position: relative; color: #fff; background: var(--navy-900); overflow: hidden; min-height: 460px; display: flex; align-items: flex-end; }
+.dz-hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.dz-hero-bg:not([src]) { display: none; }
+.dz-hero::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(11, 22, 38, .35) 0%, rgba(11, 22, 38, .55) 45%, rgba(11, 22, 38, .92) 100%); }
+.dz-hero-inner { position: relative; z-index: 2; padding-top: 40px; padding-bottom: 96px; }
+.back { display: inline-flex; align-items: center; gap: 4px; min-height: 36px; margin: -8px 0 -7px -10px; padding: 0 14px 0 10px; border-radius: 8px; font-size: 14px; font-weight: 500; color: #fff; background: rgba(7, 11, 20, .45); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .18); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); transition: background-color .2s; }
+.back:hover { background: rgba(7, 11, 20, .65); }
+.flip .icon { transform: rotate(180deg); }
+.dz-title { display: flex; align-items: flex-end; gap: 18px; margin-top: 70px; }
+.dz-type { width: 72px; height: 72px; object-fit: contain; padding: 10px; border-radius: 20px; background: rgba(255, 255, 255, .94); box-shadow: 0 8px 24px rgba(0, 0, 0, .25); flex: none; }
+.dz-title h1 { font-size: clamp(34px, 5.2vw, 60px); letter-spacing: -.04em; line-height: 1.03; margin-top: 10px; }
+.dz-meta { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 18px; font-size: 15px; color: rgba(255, 255, 255, .82); }
+.dz-meta > span { display: inline-flex; align-items: center; gap: 7px; }
+.dz-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.chip { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 7px 15px; border-radius: 8px; font-size: 14px; color: #fff; background: rgba(255, 255, 255, .12); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .25); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); transition: background-color .2s; }
+.chip:hover { background: rgba(255, 255, 255, .22); }
+.chip[aria-pressed="true"] { background: #fff; color: var(--ink); }
+.chip b:empty { display: none; }
+.photo-credit { position: absolute; right: 22px; bottom: 74px; font-size: 11px; color: rgba(255, 255, 255, .55); max-width: 50%; text-align: right; }
+
+.dz-body { position: relative; z-index: 3; margin-top: -56px; padding-bottom: 96px; }
+
+/* Phases */
+.phases { list-style: none; margin: 0; padding: 8px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; align-items: end; background: #fff; border-radius: var(--radius); box-shadow: var(--shadow-2); }
+.phases li { position: relative; padding: 16px 18px; border-radius: 14px; color: var(--ink-3); }
+.phases li b { display: block; font-size: 15px; color: var(--ink-2); letter-spacing: -.01em; }
+.phases li span { display: block; font-size: 13px; margin-top: 2px; line-height: 1.4; }
+.phases li::after { content: ""; position: absolute; left: 18px; right: 18px; bottom: 8px; height: 3px; border-radius: 3px; background: var(--line-soft); }
+.phases li.done::after { background: var(--navy); }
+.phases li.current { background: var(--orange-50); }
+.phases li.current b { color: var(--orange); }
+.phases li.current::after { background: var(--orange); }
+.phases li em { display: block; font-style: normal; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--orange); margin-bottom: 2px; }
+
+.dz-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 26px 0 8px; }
+
+/* Prose from the CMS */
+.prose { font-size: 17px; line-height: 1.65; color: var(--ink-2); max-width: 34em; }
+.prose > div > * + * { margin-top: 14px; }
+.prose h2 { font-size: 22px; color: var(--ink); letter-spacing: -.02em; margin-top: 28px; line-height: 1.25; }
+.prose h2:first-child { margin-top: 0; }
+.prose h4 { font-size: 17px; color: var(--ink); }
+.prose strong { color: var(--ink); font-weight: 600; }
+.prose a { color: var(--orange); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.prose ul, .prose ol { padding-left: 22px; margin: 10px 0 0; }
+.prose li + li { margin-top: 6px; }
+.prose details { border-top: 1px solid var(--line-soft); }
+.prose details:last-of-type { border-bottom: 1px solid var(--line-soft); }
+.prose details + details { margin-top: 0; }
+.prose summary { list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 0; cursor: pointer; font-size: 17px; font-weight: 600; color: var(--ink); letter-spacing: -.015em; }
+.prose summary::-webkit-details-marker { display: none; }
+.prose summary .icon { color: var(--ink-3); transition: transform .2s var(--ease); }
+.prose details[open] summary .icon { transform: rotate(180deg); }
+.prose details > div { padding-bottom: 18px; }
+.prose details > div > * + * { margin-top: 12px; }
+.collapsible.collapsed { max-height: 560px; overflow: hidden; -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent); mask-image: linear-gradient(180deg, #000 70%, transparent); }
+.show-more { margin-top: 14px; }
+
+/* Videos */
+.video-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.video-grid figure { margin: 0; }
+.video-grid figcaption { margin-top: 10px; font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+.video-grid .video { border-radius: 16px; }
+
+@media (max-width: 1024px) {
+  .video-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 680px) {
+  .dz-hero { min-height: 420px; }
+  .dz-hero-inner { padding-bottom: 84px; }
+  .dz-title { margin-top: 40px; gap: 12px; }
+  .dz-type { width: 52px; height: 52px; padding: 7px; border-radius: 14px; }
+  .photo-credit { display: none; }
+  .phases { grid-template-columns: 1fr 1fr; }
+  .phases li { padding: 12px 12px 24px; }
+  .phases li::after { bottom: 10px; }
+  .phases li:not(.current) { align-self: start; }
+  .phases li span { display: none; }
+  .phases li.current span { display: block; }
+  .dz-actions .btn { flex: 1 1 100%; justify-content: center; padding: 12px 16px; font-size: 15px; white-space: nowrap; }
+  .prose { font-size: 16px; }
+  .video-grid { grid-template-columns: 1fr; }
+}
+/* Apple pass */
+.chip { border-radius: 980px; }
+.phases { border-radius: var(--radius-lg); box-shadow: var(--shadow-2); }
+.phases li { border-radius: 14px; }
+.phases li em { font-family: var(--font); font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+.phases li.current { background: var(--bg-2); }
+.phases li.current b, .phases li em { color: var(--orange); }
+.dz-hero::before { background: linear-gradient(180deg, rgba(0, 0, 0, .48) 0%, rgba(0, 0, 0, .5) 45%, rgba(0, 0, 0, .85) 100%); }
+.dz-title h1 { font-weight: 600; letter-spacing: -.035em; }
+.prose a { color: var(--link); }
+.prose summary { font-weight: 600; }
+:root[data-theme="clarity"] .dz-actions .btn-dark, :root[data-theme="clarity"] .dz-actions .btn-outline { background: #fff; color: var(--ink); border-color: transparent; box-shadow: inset 0 0 0 1px var(--line); }
+:root[data-theme="clarity"] .dz-actions .btn-dark:hover, :root[data-theme="clarity"] .dz-actions .btn-outline:hover { background: var(--bg-3); color: var(--ink); }
+/* Touch: .back grows from 36 to 44px; larger negative margins keep the hero content where it was. */
+@media (pointer: coarse) {
+  .back { margin: -12px 0 -11px -10px; }
+  /* Link-only rows in the resource lists become full 44pt rows. */
+  #local-resources li > a:only-child { display: inline-flex; align-items: center; min-height: var(--tap); }
+  #local-resources li:has(> a:only-child) + li { margin-top: 0; }
+}
+/* Phone: prose links reach 44pt. Link-only list rows become full rows (no overlapping hit boxes);
+   links inside running text grow their hit box with padding only, so line layout is unchanged. */
+@media (max-width: 734px) {
+  .prose ul > li > a:only-child { display: inline-flex; align-items: center; min-height: var(--tap); padding-block: 9px; }
+  .prose ul > li:has(> a:only-child) + li { margin-top: 0; }
+  .prose ol > li > a, .prose details p > a { padding-block: 13px; }
+  .prose summary a { display: inline-flex; align-items: center; min-height: var(--tap); }
+}

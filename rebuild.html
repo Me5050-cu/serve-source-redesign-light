@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Rebuild | Serve Source</title>
+<meta name="description" content="Long-term recovery and rebuild projects from Serve Source partner organizations.">
+<link rel="icon" href="assets/img/logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/directory.css">
+<script src="assets/js/theme.js"></script>
+</head>
+<body>
+<main>
+  <!-- Long-Term Recovery -->
+  <section class="band">
+    <img class="band-bg" src="https://static.wixstatic.com/media/f83a26_0f45a7fbcb3846baa60ef1114c9bf8c4~mv2.jpeg/v1/fill/w_2000,h_900,al_c,q_80/f83a26_0f45a7fbcb3846baa60ef1114c9bf8c4~mv2.jpeg" alt="">
+    <div class="wrap band-inner">
+      <h1 class="display">Long-Term <em>Recovery</em></h1>
+      <p class="lede">With 50+ partner organizations across the nation and around the world, we’re committed to bringing hope to communities—both in times of crisis and throughout the long road of recovery. Our goal is to share opportunities and make it easy for you to get involved. This is where we feature major REBUILD projects and Large-Scale Serve Opportunities that make a lasting impact.</p>
+      <a class="btn btn-primary submit-project" target="_blank" rel="noopener"><span data-icon="plus"></span>Submit a Rebuild Project</a>
+    </div>
+  </section>
+
+  <!-- After the Storm -->
+  <section class="section" id="get-involved">
+    <div class="wrap storm">
+      <div class="mosaic">
+        <img src="https://static.wixstatic.com/media/f83a26_0f45a7fbcb3846baa60ef1114c9bf8c4~mv2.jpeg/v1/fill/w_700,h_520,al_c,q_85/f83a26_0f45a7fbcb3846baa60ef1114c9bf8c4~mv2.jpeg" alt="Volunteers working together" loading="lazy">
+        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695c704f24f26045c4d0f1c0/d615a2eda_20250719_113556.jpeg" alt="Rebuild project" loading="lazy">
+        <img src="https://static.wixstatic.com/media/f83a26_f02783dcb08644a5a4b6ee94fbe99b8b~mv2.jpeg/v1/fill/w_700,h_520,al_c,q_85/f83a26_f02783dcb08644a5a4b6ee94fbe99b8b~mv2.jpeg" alt="Community service" loading="lazy">
+        <img src="https://static.wixstatic.com/media/f83a26_8f6d0540d18a411d9c28c9a188749bf5~mv2.jpg/v1/fill/w_700,h_520,al_c,q_85/f83a26_8f6d0540d18a411d9c28c9a188749bf5~mv2.jpg" alt="Disaster relief work" loading="lazy">
+      </div>
+      <div class="storm-body">
+        <h2 class="title">After the Storm&nbsp;— <em>Get Involved!</em></h2>
+        <p class="lede">Whether you’re a church leader, business leader, or simply someone eager to make a difference—Serve Source makes it easy to find meaningful ways to engage in organized relief efforts.</p>
+        <p class="lede">Our incredible partner organizations are active in communities across the country, creating ongoing opportunities to serve, rebuild, and bring hope to those who’ve faced the hardest times. These are powerful Short-Term Mission opportunities—and we invite you join them and support the efforts!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="projects" id="rebuild-projects">
+    <div class="wrap">
+      <dl class="stat-row" id="stats">
+        <div class="green"><dt>Active</dt><dd data-k="active">—</dd></div>
+        <div class="blue"><dt>Scheduled</dt><dd data-k="scheduled">—</dd></div>
+        <div><dt>Completed</dt><dd data-k="completed">—</dd></div>
+        <div><dt>Orgs</dt><dd data-k="orgs">—</dd></div>
+        <div><dt>Showing</dt><dd data-k="showing">—</dd></div>
+      </dl>
+      <div class="split">
+        <div>
+          <section class="panel">
+            <div class="panel-head"><span class="icon-chip soft" data-icon="map"></span><h2>Rebuild Project Locations</h2></div>
+            <div id="map" class="map-box" role="region" aria-label="Rebuild project map"></div>
+          </section>
+          <div class="list-head">
+            <h2 id="list-title">Rebuild Projects</h2>
+            <button class="btn btn-outline btn-sm" id="f-copy"><span data-icon="link"></span>Copy Filtered Link</button>
+          </div>
+          <ul class="responses" id="projects"></ul>
+        </div>
+        <aside class="filter-panel">
+          <section class="panel">
+            <div class="panel-head"><span class="icon-chip soft" data-icon="filter"></span><h2>Filters</h2></div>
+            <fieldset style="margin-top:0"><legend>Project Status</legend><div class="checks-list" id="f-status"></div></fieldset>
+            <fieldset><legend>Linked Disaster</legend><select class="select" id="f-disaster" aria-label="Linked disaster"><option value="">All disasters</option></select></fieldset>
+            <fieldset><legend>Organization Type</legend><div class="checks-list" id="f-orgtype"></div></fieldset>
+            <fieldset><legend>Service Type</legend><div class="checks-list" id="f-service"></div></fieldset>
+            <fieldset>
+              <legend>Filter by Organization</legend>
+              <label class="search small-search"><span data-icon="search"></span><input type="search" id="f-orgsearch" placeholder="Search organizations" aria-label="Search organizations"></label>
+              <div class="checks-list two" id="f-org" style="margin-top:8px"></div>
+            </fieldset>
+            <div class="filter-foot"><button class="btn btn-tint btn-sm" id="f-reset">Reset</button></div>
+          </section>
+          <div class="side-card navy" style="margin-top:16px">
+            <span class="icon-chip" data-icon="users"></span>
+            <h3>Leading a Rebuild Project?</h3>
+            <p>Submit your long-term recovery project to connect with volunteers and partners.</p>
+            <a class="btn btn-light submit-project" target="_blank" rel="noopener"><span data-icon="plus"></span>Submit Project</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/directory.js"></script>
+<script src="assets/js/rebuild.js"></script>
+</body>
+</html>

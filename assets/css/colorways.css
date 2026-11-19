@@ -1,0 +1,403 @@
+/* Serve Source colorways. Every brand colour both directions use comes from here.
+   Source: BRANDING_DESIGN_SYSTEM_REFINED v1.4 §6 (colour), §9 (motifs), §14 (report / Serve Bot patterns),
+   owner review 2026-11-05. Loaded by assets/js/theme.js after site.css and lettering.css, before the
+   direction's stylesheet. Switch with ?colorway=<id> (remembered in localStorage "ss-colorway").
+
+   OPTIONS (html[data-colorway=...]; theme.js always sets one)
+     platform         DEFAULT. The guide's 2026-11-05 web decisions exactly.
+     impact-report    The 2025 Impact Report look. Borrows Print Navy #002249 (a print token) for dark sections.
+     mission-control  Serve Bot posture. Borrows Deep Serve Navy #0B2A4A (a social-card token) as the page canvas.
+     daylight         White-space heavy. Navy only in the hero and the closing band.
+     community        Platform plus Teal #2A9D8F as the limited support accent and more Light Orange Tint on navy.
+   brandcheck runs in platform. impact-report and mission-control are expected to trip region.hero / region.closing /
+   region.dark / color.heading where they borrow (mission-control also trips color.forbidden, because its #0B2A4A canvas
+   counts as a band background); see scratchpad build/brand/colorways.md for the honest notes.
+
+   TOKEN CONTRACT (directions read these; they never declare --ss-* themselves and never hard-code brand hex)
+   Regions
+     --ss-hero-from / --ss-hero-to / --ss-hero      page-hero gradient stops and the gradient itself (to bottom right)
+     --ss-hero-from-rgb / --ss-hero-to-rgb           the stops as "r g b" for scrims: rgb(var(--ss-hero-from-rgb) / .9)
+     --ss-dark / --ss-dark-rgb                       dark sections that are not hero / closing / footer
+     --ss-dark-2                                     panels and raised surfaces on a dark section
+     --ss-band / --ss-band-rgb                       closing call-to-action bands and photo-band scrims
+     --ss-footer                                     site footer
+     --ss-feature                                    the background of a direction's designated "feature" sections
+                                                     (navy in every colorway except daylight, where it is #F8FAFC);
+                                                     paint it with the .ss-feature scope below so the inks follow
+   Surfaces (page context)
+     --ss-page / --ss-page-alt                       page and alternate-section backgrounds
+     --ss-surface / --ss-surface-2                   cards / subtle fills (hover rows, wells, segmented tracks)
+     --ss-input-bg / --ss-input-text / --ss-input-border
+     --ss-scheme                                     light | dark (also set as color-scheme on <html>)
+   Inks (context tokens: correct for the page, re-bound automatically inside dark regions and the scopes below)
+     --ss-heading  --ss-text (paragraphs)  --ss-text-strong  --ss-muted  --ss-border  --ss-border-strong
+     --ss-link  --ss-link-hover  --ss-link-mark (the orange arrow/underline on marketing links)
+     --ss-link-fn  --ss-link-fn-hover (functional / data links)
+     --ss-label (kickers and small labels: navy on light, Light Orange Tint on dark)
+     --ss-em (headline accent words)  --ss-icon  --ss-rule (divider rules)  --ss-focus (focus ring)
+     --ss-secondary / --ss-secondary-bg / --ss-secondary-hover-bg  (outline button ink+border, fill, hover fill)
+   Fixed ink sets (for when a direction needs the other scheme explicitly)
+     --ss-on-light-{heading,text,strong,muted,border,border-strong,link,link-hover,label,icon,em,rule,focus,secondary...}
+     --ss-on-dark-{heading,text,strong,muted,border,border-strong,link,link-hover,link-fn,label,icon,em,rule,focus,secondary...}
+   Accents
+     --ss-accent #CC5500 (every primary button, big numbers, rules, arrows, active states)
+     --ss-accent-hover #B34A00     --ss-accent-ink #FFFFFF (text on the accent)
+     --ss-accent-on-dark #F4A261 (labels and icons on navy only, never on white)
+     --ss-support (navy, or Teal in community) / --ss-support-soft (its 12% tint for fills)
+   Stats (the white stat card with an orange number)
+     --ss-stat-card-bg  --ss-stat-card-border  --ss-stat-number  --ss-stat-label
+   BrandBackdrop (wired to site.css's --bb-* below; directions may still tune --bb-* per host)
+     --ss-bb-map-color  --ss-bb-map-opacity  --ss-bb-mark-color  --ss-bb-mark-opacity
+
+   SCOPES (zero specificity, so any direction rule wins)
+     Dark regions re-bind the context inks to the on-dark set automatically:
+       .hero .page-hero .dz-hero .net-hero .band .cta .section.dark .on-dark .side-card.navy .site-footer, and .ss-dark
+     .ss-light    re-binds to the on-light set (white stat cards or white panels inside a dark region / mission-control)
+     .ss-feature  paints --ss-feature and re-binds the inks to whichever scheme the colorway gives feature sections
+   A direction can add these classes from its theme JS (presentational only), or repeat the same re-binding for
+   its own selectors.
+
+   Semantic and status colours (success, warning, error, info, badge tints, map pins) are fixed in site.css and
+   directory.css and do not change with the colorway. */
+
+/* ---------------------------------------------------------------------------------------------
+   platform (default): the guide's web decisions, 2026-11-05
+   --------------------------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+  --ss-scheme: light;
+  /* fixed brand values (§6) */
+  --ss-accent: #cc5500;
+  --ss-accent-hover: #b34a00;
+  --ss-accent-ink: #ffffff;
+  --ss-accent-on-dark: #f4a261;
+  --ss-navy: #1e3a5f;                 /* structural navy: outline buttons, checked controls, navy labels */
+  --ss-link-fn: #2563eb;
+  --ss-link-fn-hover: #1d4ed8;
+
+  /* regions */
+  --ss-hero-from: #1e3a5f;
+  --ss-hero-to: #2d5a8c;
+  --ss-hero-from-rgb: 30 58 95;
+  --ss-hero-to-rgb: 45 90 140;
+  --ss-hero: linear-gradient(to bottom right, var(--ss-hero-from), var(--ss-hero-to));
+  --ss-dark: #1e3a5f;
+  --ss-dark-rgb: 30 58 95;
+  --ss-dark-2: #2d5a8c;
+  --ss-band: #1e3a5f;
+  --ss-band-rgb: 30 58 95;
+  --ss-footer: #0f172a;
+  --ss-feature: #1e3a5f;
+
+  /* surfaces */
+  --ss-page: #ffffff;
+  --ss-page-alt: #f8fafc;
+  --ss-surface: #ffffff;
+  --ss-surface-2: #f1f5f9;
+  --ss-input-bg: #ffffff;
+  --ss-input-text: #0f172a;
+  --ss-input-border: #d6d6d6;
+
+  /* the on-light ink set */
+  --ss-on-light-heading: #0f172a;
+  --ss-on-light-text: #475569;
+  --ss-on-light-strong: #334155;
+  --ss-on-light-muted: #64748b;
+  --ss-on-light-border: #e2e8f0;
+  --ss-on-light-border-strong: #d6d6d6;
+  --ss-on-light-link: #1e3a5f;
+  --ss-on-light-link-hover: #2d5a8c;
+  --ss-on-light-label: #1e3a5f;
+  --ss-on-light-icon: #1e3a5f;
+  --ss-on-light-em: inherit;
+  --ss-on-light-focus: #1e3a5f;
+  --ss-on-light-secondary: #1e3a5f;
+  --ss-on-light-secondary-bg: #ffffff;
+  --ss-on-light-secondary-hover-bg: #f1f5f9;
+
+  /* the on-dark ink set */
+  --ss-on-dark-heading: #ffffff;
+  --ss-on-dark-text: rgba(255, 255, 255, .88);
+  --ss-on-dark-strong: #ffffff;
+  --ss-on-dark-muted: #cbd5e1;
+  --ss-on-dark-border: rgba(255, 255, 255, .18);
+  --ss-on-dark-border-strong: rgba(255, 255, 255, .42);
+  --ss-on-dark-link: #ffffff;
+  --ss-on-dark-link-hover: #f4a261;
+  --ss-on-dark-label: #f4a261;
+  --ss-on-dark-icon: #f4a261;
+  --ss-on-dark-em: inherit;
+  --ss-on-dark-focus: #f4a261;
+  --ss-on-dark-link-fn: #ffffff;       /* #2563EB is under 3:1 on navy: data links on dark are white, underlined */
+  --ss-on-dark-link-fn-hover: #f4a261;
+  --ss-on-dark-secondary: #ffffff;
+  --ss-on-dark-secondary-bg: transparent;
+  --ss-on-dark-secondary-hover-bg: rgba(255, 255, 255, .12);
+
+  /* feature sections take the dark set */
+  --ss-feature-scheme: dark;
+  --ss-feature-heading: var(--ss-on-dark-heading);
+  --ss-feature-text: var(--ss-on-dark-text);
+  --ss-feature-strong: var(--ss-on-dark-strong);
+  --ss-feature-muted: var(--ss-on-dark-muted);
+  --ss-feature-border: var(--ss-on-dark-border);
+  --ss-feature-link: var(--ss-on-dark-link);
+  --ss-feature-link-hover: var(--ss-on-dark-link-hover);
+  --ss-feature-label: var(--ss-on-dark-label);
+  --ss-feature-icon: var(--ss-on-dark-icon);
+  --ss-feature-em: var(--ss-on-dark-em);
+  --ss-feature-focus: var(--ss-on-dark-focus);
+  --ss-feature-rule: var(--ss-on-dark-rule);
+  --ss-feature-link-fn: var(--ss-on-dark-link-fn);
+  --ss-feature-link-fn-hover: var(--ss-on-dark-link-fn-hover);
+  --ss-feature-secondary: var(--ss-on-dark-secondary);
+  --ss-feature-secondary-bg: var(--ss-on-dark-secondary-bg);
+  --ss-feature-secondary-hover-bg: var(--ss-on-dark-secondary-hover-bg);
+
+  /* accents */
+  --ss-support: #1e3a5f;
+  --ss-support-soft: rgba(30, 58, 95, .08);
+  --ss-on-light-rule: #cc5500;        /* orange divider rules */
+  --ss-on-dark-rule: #cc5500;
+  --ss-link-mark: #cc5500;
+
+  /* stats */
+  --ss-stat-card-bg: #ffffff;
+  --ss-stat-card-border: #e2e8f0;
+  --ss-stat-number: #cc5500;
+  --ss-stat-label: #1e3a5f;
+
+  /* BrandBackdrop: the exact recipe from src/components/brand/BrandBackdrop.jsx */
+  --ss-bb-map-color: #4a7bb0;
+  --ss-bb-map-opacity: .5;
+  --ss-bb-mark-color: #ffffff;
+  --ss-bb-mark-opacity: .07;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   impact-report: the 2025 Impact Report. Print Navy #002249 (§6 "Report and print background") for the
+   hero start, dark and feature sections and the closing band; white stat cards, orange numbers, navy headings,
+   a slightly stronger watermark (the report's pin mark).
+   --------------------------------------------------------------------------------------------- */
+:root[data-colorway="impact-report"] {
+  --ss-hero-from: #002249;
+  --ss-hero-to: #1e3a5f;
+  --ss-hero-from-rgb: 0 34 73;
+  --ss-hero-to-rgb: 30 58 95;
+  --ss-dark: #002249;
+  --ss-dark-rgb: 0 34 73;
+  --ss-dark-2: #1e3a5f;
+  --ss-band: #002249;
+  --ss-band-rgb: 0 34 73;
+  --ss-feature: #002249;
+  --ss-page-alt: #f1f5f9;
+  --ss-on-light-heading: #1e3a5f;
+  --ss-on-light-label: #1e3a5f;
+  --ss-on-dark-text: rgba(255, 255, 255, .9);
+  --ss-stat-card-border: transparent;
+  --ss-bb-map-opacity: .42;
+  --ss-bb-mark-opacity: .09;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   mission-control: Serve Bot's "calm, cinematic, mission-control, map-forward" posture (§9, §14). The page
+   canvas is Deep Serve Navy #0B2A4A, panels Platform Navy #1E3A5F, lines Relational Blue #2D5A8C. The hero
+   keeps the web gradient, the closing band Platform Navy and the footer Footer Slate, so only the canvas borrows.
+   --------------------------------------------------------------------------------------------- */
+:root[data-colorway="mission-control"] {
+  color-scheme: dark;
+  --ss-scheme: dark;
+  --ss-dark: #0b2a4a;
+  --ss-dark-rgb: 11 42 74;
+  --ss-dark-2: #1e3a5f;
+  --ss-feature: #1e3a5f;
+  --ss-page: #0b2a4a;
+  --ss-page-alt: #0b2a4a;
+  --ss-surface: #1e3a5f;
+  --ss-surface-2: #2d5a8c;
+  --ss-input-bg: #0b2a4a;
+  --ss-input-text: #ffffff;
+  --ss-input-border: #4a7bb0;          /* the BrandBackdrop map blue: 3.3:1 on the canvas, a readable field edge */
+  --ss-on-dark-text: #cbd5e1;
+  --ss-on-dark-muted: #a9b6c8;         /* 5.6:1 on #1E3A5F, 7.1:1 on the canvas (#94A3B8 was 4.49:1 on panels) */
+  --ss-on-dark-border: #2d5a8c;
+  --ss-on-dark-border-strong: #4a7bb0;
+  --ss-support: #2d5a8c;
+  --ss-support-soft: rgba(45, 90, 140, .35);
+  --ss-stat-card-border: transparent;
+  --ss-bb-map-opacity: .55;
+  --ss-bb-mark-opacity: .05;
+}
+/* The footer keeps Footer Slate text #94A3B8 (§6 / web rules: footer text slate), 6.96:1 on #0F172A. */
+:root[data-colorway="mission-control"] .site-footer { --ss-on-dark-muted: #94a3b8; }
+
+/* ---------------------------------------------------------------------------------------------
+   daylight: white-space heavy. Navy only in the hero and the closing band; feature sections turn to the
+   #F8FAFC slate; orange carries the rules and the numbers; headings in Platform Navy.
+   --------------------------------------------------------------------------------------------- */
+:root[data-colorway="daylight"] {
+  --ss-feature: #f8fafc;
+  --ss-page-alt: #f8fafc;
+  --ss-on-light-heading: #1e3a5f;
+  --ss-feature-scheme: light;
+  --ss-feature-heading: var(--ss-on-light-heading);
+  --ss-feature-text: var(--ss-on-light-text);
+  --ss-feature-strong: var(--ss-on-light-strong);
+  --ss-feature-muted: var(--ss-on-light-muted);
+  --ss-feature-border: var(--ss-on-light-border);
+  --ss-feature-link: var(--ss-on-light-link);
+  --ss-feature-link-hover: var(--ss-on-light-link-hover);
+  --ss-feature-label: var(--ss-on-light-label);
+  --ss-feature-icon: var(--ss-on-light-icon);
+  --ss-feature-em: var(--ss-on-light-em);
+  --ss-feature-focus: var(--ss-on-light-focus);
+  --ss-feature-rule: var(--ss-on-light-rule);
+  --ss-feature-link-fn: #2563eb;
+  --ss-feature-link-fn-hover: #1d4ed8;
+  --ss-feature-secondary: var(--ss-on-light-secondary);
+  --ss-feature-secondary-bg: var(--ss-on-light-secondary-bg);
+  --ss-feature-secondary-hover-bg: var(--ss-on-light-secondary-hover-bg);
+  --ss-on-light-icon: #cc5500;         /* icon highlights in orange (§6 "Orange on white: ... icon highlights") */
+  --ss-stat-card-border: #e2e8f0;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   community: platform plus Teal #2A9D8F ("limited supporting/positive accent ... community care", §6) for
+   icons, check marks, dots and fills (never small text: 3.3:1 on white), and more Light Orange Tint on navy:
+   headline accent words and rules on dark regions.
+   --------------------------------------------------------------------------------------------- */
+:root[data-colorway="community"] {
+  --ss-support: #2a9d8f;
+  --ss-support-soft: rgba(42, 157, 143, .12);
+  --ss-on-light-icon: #2a9d8f;
+  --ss-on-dark-em: #f4a261;
+  --ss-on-dark-rule: #f4a261;
+  --ss-on-dark-icon: #f4a261;
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Context inks: the page scheme, then the scopes
+   --------------------------------------------------------------------------------------------- */
+:root {
+  --ss-heading: var(--ss-on-light-heading);
+  --ss-text: var(--ss-on-light-text);
+  --ss-text-strong: var(--ss-on-light-strong);
+  --ss-muted: var(--ss-on-light-muted);
+  --ss-border: var(--ss-on-light-border);
+  --ss-border-strong: var(--ss-on-light-border-strong);
+  --ss-link: var(--ss-on-light-link);
+  --ss-link-hover: var(--ss-on-light-link-hover);
+  --ss-label: var(--ss-on-light-label);
+  --ss-icon: var(--ss-on-light-icon);
+  --ss-em: var(--ss-on-light-em);
+  --ss-focus: var(--ss-on-light-focus);
+  --ss-rule: var(--ss-on-light-rule);
+  --ss-secondary: var(--ss-on-light-secondary);
+  --ss-secondary-bg: var(--ss-on-light-secondary-bg);
+  --ss-secondary-hover-bg: var(--ss-on-light-secondary-hover-bg);
+}
+:root[data-colorway="mission-control"],
+:where(.hero, .page-hero, .dz-hero, .net-hero, .band, .cta, .section.dark, .on-dark, .side-card.navy, .site-footer, .ss-dark) {
+  --ss-heading: var(--ss-on-dark-heading);
+  --ss-text: var(--ss-on-dark-text);
+  --ss-text-strong: var(--ss-on-dark-strong);
+  --ss-muted: var(--ss-on-dark-muted);
+  --ss-border: var(--ss-on-dark-border);
+  --ss-border-strong: var(--ss-on-dark-border-strong);
+  --ss-link: var(--ss-on-dark-link);
+  --ss-link-hover: var(--ss-on-dark-link-hover);
+  --ss-label: var(--ss-on-dark-label);
+  --ss-icon: var(--ss-on-dark-icon);
+  --ss-em: var(--ss-on-dark-em);
+  --ss-focus: var(--ss-on-dark-focus);
+  --ss-rule: var(--ss-on-dark-rule);
+  --ss-link-fn: var(--ss-on-dark-link-fn);
+  --ss-link-fn-hover: var(--ss-on-dark-link-fn-hover);
+  --ss-secondary: var(--ss-on-dark-secondary);
+  --ss-secondary-bg: var(--ss-on-dark-secondary-bg);
+  --ss-secondary-hover-bg: var(--ss-on-dark-secondary-hover-bg);
+}
+:where(.ss-light) {
+  --ss-heading: var(--ss-on-light-heading);
+  --ss-text: var(--ss-on-light-text);
+  --ss-text-strong: var(--ss-on-light-strong);
+  --ss-muted: var(--ss-on-light-muted);
+  --ss-border: var(--ss-on-light-border);
+  --ss-border-strong: var(--ss-on-light-border-strong);
+  --ss-link: var(--ss-on-light-link);
+  --ss-link-hover: var(--ss-on-light-link-hover);
+  --ss-link-fn: #2563eb;
+  --ss-link-fn-hover: #1d4ed8;
+  --ss-label: var(--ss-on-light-label);
+  --ss-icon: var(--ss-on-light-icon);
+  --ss-em: var(--ss-on-light-em);
+  --ss-focus: var(--ss-on-light-focus);
+  --ss-rule: var(--ss-on-light-rule);
+  --ss-secondary: var(--ss-on-light-secondary);
+  --ss-secondary-bg: var(--ss-on-light-secondary-bg);
+  --ss-secondary-hover-bg: var(--ss-on-light-secondary-hover-bg);
+  --ss-surface: #ffffff;
+  --ss-surface-2: #f1f5f9;
+  color: var(--ss-text);
+}
+:where(.ss-feature) {
+  --ss-heading: var(--ss-feature-heading);
+  --ss-text: var(--ss-feature-text);
+  --ss-text-strong: var(--ss-feature-strong);
+  --ss-muted: var(--ss-feature-muted);
+  --ss-border: var(--ss-feature-border);
+  --ss-link: var(--ss-feature-link);
+  --ss-link-hover: var(--ss-feature-link-hover);
+  --ss-label: var(--ss-feature-label);
+  --ss-icon: var(--ss-feature-icon);
+  --ss-em: var(--ss-feature-em);
+  --ss-focus: var(--ss-feature-focus);
+  --ss-rule: var(--ss-feature-rule);
+  --ss-link-fn: var(--ss-feature-link-fn);
+  --ss-link-fn-hover: var(--ss-feature-link-fn-hover);
+  --ss-secondary: var(--ss-feature-secondary);
+  --ss-secondary-bg: var(--ss-feature-secondary-bg);
+  --ss-secondary-hover-bg: var(--ss-feature-secondary-hover-bg);
+  background: var(--ss-feature);
+  color: var(--ss-text);
+}
+
+/* ---------------------------------------------------------------------------------------------
+   The shared base (site.css, directory.css, page CSS) reads these older names. Mapping them here means any
+   corner a direction has not restyled still follows the colorway. Same specificity as site.css's :root and
+   loaded later, so this wins over site.css and loses to the direction.
+   --------------------------------------------------------------------------------------------- */
+:root {
+  --hero-grad: var(--ss-hero);
+  --cta-bg: var(--ss-band);
+  --footer-bg: var(--ss-footer);
+  --navy-900: var(--ss-dark);
+  --bg: var(--ss-page);
+  --bg-2: var(--ss-page-alt);
+  --bg-3: var(--ss-surface-2);
+  --ink: var(--ss-on-light-heading);
+  --ink-2: var(--ss-on-light-strong);
+  --ink-3: var(--ss-on-light-text);
+  --ink-4: var(--ss-on-light-muted);
+  --line: var(--ss-on-light-border-strong);
+  --line-soft: var(--ss-on-light-border);
+  --orange: var(--ss-accent);
+  --orange-600: var(--ss-accent-hover);
+  --orange-300: var(--ss-accent-on-dark);
+  --link: var(--ss-on-light-link);
+  --link-fn: var(--ss-link-fn);
+  --link-fn-hover: var(--ss-link-fn-hover);
+  --bb-map-color: var(--ss-bb-map-color);
+  --bb-map-opacity: var(--ss-bb-map-opacity);
+  --bb-mark-color: var(--ss-bb-mark-color);
+  --bb-mark-opacity: var(--ss-bb-mark-opacity);
+}
+:root[data-colorway="mission-control"] {
+  --ink: var(--ss-on-dark-heading);
+  --ink-2: var(--ss-on-dark-strong);
+  --ink-3: var(--ss-on-dark-text);
+  --ink-4: var(--ss-on-dark-muted);
+  --line: var(--ss-on-dark-border-strong);
+  --line-soft: var(--ss-on-dark-border);
+  --link: var(--ss-on-dark-link);
+}

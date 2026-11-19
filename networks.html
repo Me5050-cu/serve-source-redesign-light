@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Community Networks | Serve Source</title>
+<meta name="description" content="Find trusted local networks helping communities serve together.">
+<link rel="icon" href="assets/img/logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/directory.css">
+<script src="assets/js/theme.js"></script>
+</head>
+<body>
+<main>
+  <!-- Intro -->
+  <section class="net-intro">
+    <div class="wrap">
+      <div class="net-hero">
+        <div class="net-hero-copy">
+          <span class="eyebrow">Serve Source Community Networks</span>
+          <h1>Find trusted local networks helping communities <em>serve together.</em></h1>
+          <p>Across every city, there are churches, nonprofits, ministries, businesses, and community leaders already serving people in need. Community Networks help bring that work into view so individuals can find help, volunteers can take action, and leaders can collaborate with greater clarity.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-primary" href="#explore">Explore Networks<span data-icon="arrow"></span></a>
+            <a class="btn btn-glass" href="https://app.servesource.org/networks" target="_blank" rel="noopener">Start a Network in Your Area</a>
+          </div>
+        </div>
+        <div class="net-hero-tiles">
+          <div><span data-icon="search"></span><h3>Find Help Nearby</h3><p>Discover trusted local organizations and community resources.</p></div>
+          <div><span data-icon="heart"></span><h3>Serve With Purpose</h3><p>Browse volunteer opportunities, events, and programs from network partners.</p></div>
+          <div><span data-icon="users"></span><h3>Strengthen Local Collaboration</h3><p>Help churches, nonprofits, and community leaders reduce duplication and serve together.</p></div>
+          <div><span data-icon="building"></span><h3>Make the Local Church Visible</h3><p>Highlight Christ-centered service already happening in the community.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why -->
+  <section class="section" id="why">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Why Community Networks Matter</span>
+        <h2 class="display">The passion to serve already exists. <em>The infrastructure often does not.</em></h2>
+        <p class="lede">Serve Source helps local leaders organize shared visibility around the people, ministries, and organizations already serving their community. A Community Network gives each city or region a simple place to see who is serving, where they are located, what opportunities are available, and how people can connect.</p>
+      </div>
+      <div class="why-grid">
+        <div><span class="icon-chip soft" data-icon="life"></span><h3>For People Seeking Help</h3><p>Find local organizations that may provide assistance, support, programs, or referrals in your area.</p></div>
+        <div><span class="icon-chip soft" data-icon="heart"></span><h3>For Volunteers</h3><p>Discover meaningful opportunities to serve with trusted organizations already active in your community.</p></div>
+        <div><span class="icon-chip soft" data-icon="home"></span><h3>For Churches and Outreach Leaders</h3><p>Connect your congregation to existing serve opportunities and build relationships with local ministry partners.</p></div>
+        <div><span class="icon-chip soft" data-icon="building"></span><h3>For Funders and Community Partners</h3><p>See credible organizations already advancing Kingdom-centered work and practical care in their region.</p></div>
+        <div><span class="icon-chip soft" data-icon="users"></span><h3>For Local Network Leaders</h3><p>Formalize collaboration without losing the unique calling of each church, nonprofit, or ministry.</p></div>
+        <div><span class="icon-chip soft" data-icon="pin"></span><h3>For Cities and Regions Without a Network</h3><p>Serve Source can help local leaders take the first step toward connection, visibility, and collaboration.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Explore -->
+  <section class="section alt" id="explore">
+    <div class="wrap">
+      <div class="section-head left">
+        <h2 class="title">Explore Active and Emerging Networks</h2>
+        <p class="lede">Use the map or network cards below to explore local Community Networks. Each network may include partner organizations, community events, volunteer opportunities, local resources, and ways to join or support the work.</p>
+      </div>
+      <div id="map" class="map-box wide" role="region" aria-label="Network map"></div>
+      <div class="net-filters">
+        <label><span>State</span><select class="select" id="f-state" aria-label="State"><option value="">All states</option></select></label>
+        <label><span>City</span><select class="select" id="f-city" aria-label="City"><option value="">All cities</option></select></label>
+        <label><span>Search</span><span class="search small-search"><span data-icon="search"></span><input type="search" id="f-search" placeholder="Search by name" aria-label="Search networks by name"></span></label>
+      </div>
+      <p class="muted small" id="net-count"></p>
+      <ul class="net-grid" id="networks"></ul>
+
+      <div class="net-more">
+        <div>
+          <h3>More networks are on the way</h3>
+          <p>More Community Networks are being developed. Serve Source is working with local leaders to help churches, nonprofits, and ministries connect, collaborate, and serve in their own communities.</p>
+        </div>
+        <a class="btn btn-primary" href="https://app.servesource.org/Help-Center" target="_blank" rel="noopener"><span data-icon="phone"></span>Start a Conversation</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/directory.js"></script>
+<script src="assets/js/networks.js"></script>
+</body>
+</html>
