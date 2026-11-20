@@ -1,0 +1,456 @@
+/* Cinema UI: the palette-neutral component layer shared byte-for-byte by the dark and the light build.
+   Loaded by theme.js right after themes/cinema.css (light: cinema.css -> cinema-ui.css -> cinema-white.css).
+   Holds every shape, spacing, elevation, mask, layout and transition rule. Colours come only from tokens:
+   the --ui-* defaults below are the DARK values; cinema-white.css re-points them for daylight.
+   Rule of thumb: if a rule would differ between black and white, it belongs in a token, not here. */
+
+/* =====================================================================
+   1. Tokens (DARK defaults)
+   ===================================================================== */
+:root {
+  /* radii (shared, never overridden) */
+  --r-pill: 999px;
+  --r-card: 20px;
+  --r-media: 18px;
+  --r-plate: 28px;
+  --r-logo: 14px;
+  --r-chip: 10px;
+  /* page colour, for fades and masks that melt into the canvas */
+  --ui-page: #07080b;
+  --ui-page-rgb: 7, 8, 11;
+  /* the alt band colour, so fades inside an alt section melt into that band, not the page */
+  --ui-alt-rgb: 15, 17, 21;
+  /* eyebrow orange: the button orange on black, a darker burnt orange in daylight */
+  --ui-eyebrow: #f26a1b;
+  /* surfaces */
+  --ui-surface: #121419;
+  --ui-surface-2: #1a1d23;
+  --ui-line: rgba(255, 255, 255, .08);
+  --ui-line-strong: rgba(255, 255, 255, .16);
+  --ui-ghost-line: rgba(255, 255, 255, .32);
+  /* elevation */
+  --ui-shadow-1: inset 0 1px 0 rgba(255, 255, 255, .04), 0 8px 24px -12px rgba(0, 0, 0, .6);
+  --ui-shadow-2: inset 0 1px 0 rgba(255, 255, 255, .06), 0 24px 48px -24px rgba(0, 0, 0, .8);
+  --ui-shadow-accent: 0 14px 28px -16px rgba(242, 106, 27, .45);
+  /* accent and glass */
+  --ui-tint: rgba(242, 106, 27, .14);
+  --ui-tint-2: rgba(242, 106, 27, .24);
+  --ui-glass: rgba(7, 8, 11, .82);
+  --ui-bar: rgba(7, 8, 11, .95);
+  --ui-ring: rgba(242, 106, 27, .28);
+  --ui-photo-pill: rgba(0, 0, 0, .78);
+  /* logos always sit on a light plate, so dark marks stay visible on both builds */
+  --ui-logo-bg: #f4f4f2;
+  /* contrast plate (the one card that inverts against the canvas) */
+  --ui-plate: #1a1d23;
+  --ui-plate-line: rgba(255, 255, 255, .16);
+  --ui-plate-ink: #fff;
+  --ui-plate-ink-2: rgba(255, 255, 255, .78);
+  /* segmented / selected fills */
+  --ui-sel: #fff;
+  --ui-sel-ink: #000;
+  /* map pins for networks: a plate in the ink colour, glyph in the page colour */
+  --ui-pin: #fff;
+  --ui-pin-ink: #000;
+  /* motion */
+  --ui-ease: cubic-bezier(.16, 1, .3, 1);
+  --ui-fast: 250ms;
+  --ui-slow: 450ms;
+  --radius-sm: var(--r-chip); --radius: 16px; --radius-lg: var(--r-card);
+  --shadow-1: var(--ui-shadow-1); --shadow-2: var(--ui-shadow-2);
+}
+@media (max-width: 599px) { :root { --r-media: 14px; } }
+
+/* =====================================================================
+   2. Base: type wrapping, focus, safe areas
+   ===================================================================== */
+h2, h3 { text-wrap: balance; }
+:is(.intent b, .d-card h3, .org-card h3, .net-card h3, .resp h3, .mon-card h3, .why-grid h3, .pillars h4, .d-meta, .org-meta, .resp-info, .mon-meta) { text-wrap: pretty; }
+:focus-visible { border-radius: 8px; }
+.wrap { padding-left: max(var(--cx-side), env(safe-area-inset-left)); padding-right: max(var(--cx-side), env(safe-area-inset-right)); }
+@media (max-width: 734px) {
+  .wrap { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+}
+
+/* =====================================================================
+   3. Header: transparent over the home hero, glass once the page moves
+   ===================================================================== */
+.site-header, .site-header.on-dark { transition: background-color .35s var(--ui-ease), border-color .35s var(--ui-ease), box-shadow .35s var(--ui-ease), height .35s var(--ui-ease); }
+html.cx-scrolled .site-header, html.cx-scrolled .site-header.on-dark { background: var(--ui-glass); -webkit-backdrop-filter: saturate(1.8) blur(20px); backdrop-filter: saturate(1.8) blur(20px); border-bottom-color: var(--ui-line); box-shadow: var(--ui-shadow-1); }
+/* Sub-nav pages: the header stays solid and full height so the sub-nav below never jumps. */
+html.cx-scrolled body.has-subnav .site-header { background: var(--ui-page); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; }
+.site-header:has(.nav-item.open) { background: var(--ui-page) !important; }
+.brand img { border-radius: 10px; box-shadow: 0 0 0 1px var(--ui-line); }
+.nav-trigger::after { left: 50%; right: auto; width: 20px; margin-left: -10px; bottom: 12px; height: 2px; border-radius: 2px; }
+.nav-menu { border-bottom: 0; border-radius: 0 0 var(--r-plate) var(--r-plate); box-shadow: var(--ui-shadow-2); }
+.nav-menu a { padding: 16px 16px 20px; margin: 0 -16px; border-top: 0; border-radius: 16px; transition: background-color var(--ui-fast) var(--ui-ease); }
+.nav-menu a::before { content: none; }
+.nav-menu a:hover, .nav-menu a:focus-visible, .nav-menu a[aria-current] { background: var(--ui-surface-2); }
+.nav-menu a > .icon { color: var(--cx-orange-hi); }
+body:has(.nav-item.open)::after { -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+.site-header .search-btn { border-radius: var(--r-pill); border-color: var(--ui-line-strong); padding: 0 6px 0 14px; }
+.site-header .search-btn:hover { border-color: var(--ui-ghost-line); }
+.site-header .search-btn kbd { border-radius: 6px; padding: 0 6px; }
+.site-header .search-btn.m { border-radius: var(--r-pill); background: none; border: 0; }
+.site-header .header-actions .btn { min-height: 40px; height: 40px; border-radius: var(--r-pill); padding: 0 18px; }
+.menu-toggle { border-radius: var(--r-pill); }
+
+/* =====================================================================
+   4. Buttons: one pill system
+   ===================================================================== */
+.btn { min-height: 44px; border-radius: var(--r-pill); padding: 0 24px; font-size: 15px; font-weight: 600;
+  transition: background-color var(--ui-fast) var(--ui-ease), color var(--ui-fast) var(--ui-ease), border-color var(--ui-fast) var(--ui-ease), transform var(--ui-slow) var(--ui-ease), box-shadow var(--ui-slow) var(--ui-ease); }
+.btn-sm { min-height: 40px; padding: 0 16px; font-size: 14px; }
+.btn:focus-visible, .btn-primary:focus-visible { outline: 2px solid var(--cx-orange-hi); outline-offset: 2px; border-radius: var(--r-pill); }
+.btn:active { transform: scale(.98); transition-duration: .08s; }
+/* Ghost: hairline border, no fill, ink label. Show More, Reset, Copy Filtered Link, Filters, Visit, Sign In, Start a Network. */
+:is(.btn-outline, .btn-tint, .btn-glass, .filter-toggle) { background: transparent; border: 1px solid var(--ui-ghost-line); color: var(--cx-ink); -webkit-backdrop-filter: none; backdrop-filter: none; }
+:is(.btn-outline, .btn-tint, .btn-glass, .filter-toggle):hover { background: var(--ui-surface-2); border-color: var(--cx-ink); color: var(--cx-ink); }
+.btn-tint .icon { color: inherit; }
+.filter-toggle[aria-expanded="true"] { background: var(--ui-tint); border-color: transparent; }
+@media (hover: hover) {
+  .btn:hover { transform: translate3d(0, -2px, 0); }
+  .btn-primary:hover, .site-header .header-actions .btn:hover { box-shadow: var(--ui-shadow-accent); }
+  .btn:not(.btn-primary):hover { box-shadow: var(--ui-shadow-1); }
+  .btn:active { transform: scale(.98); box-shadow: none; }
+  .btn .icon { transition: transform var(--ui-slow) var(--ui-ease); }
+}
+:is(.link-more, .intent .go, .d-foot .go, .org-go, .net-go) .icon { transition: transform var(--ui-slow) var(--ui-ease); }
+.back { border-radius: var(--r-pill); }
+
+/* =====================================================================
+   5. Pills, badges, tags
+   ===================================================================== */
+.pill { height: auto; min-height: 24px; padding: 4px 10px; border: 0; border-radius: var(--r-pill); background: color-mix(in srgb, currentColor 14%, transparent); line-height: 16px; }
+.pill:not([class*=" "]) { background: var(--ui-surface-2); }
+.pill .dot { width: 6px; height: 6px; border-radius: 50%; }
+.pill.response, .pill.assessment, .pill.monitoring, .pill.recovery, .pill.green, .pill.archived { background: color-mix(in srgb, currentColor 14%, transparent); }
+.pill.live { background: var(--cx-red); border: 0; color: #fff; }
+.pill.live .dot { background: #fff; }
+:root :is(.pill.on-photo, .d-media .pill) { background: var(--ui-photo-pill); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.verified { display: inline-flex; vertical-align: -0.12em; }
+.tag { border-radius: var(--r-pill); padding: 3px 10px; }
+.tag.more, :root .tag.more::before { border-radius: var(--r-pill); }
+
+/* =====================================================================
+   6. Controls: search, select, segmented, switch, checkbox, chips
+   ===================================================================== */
+label.search, .search { border-radius: var(--r-pill); padding: 0 20px; transition: border-color var(--ui-fast) var(--ui-ease), box-shadow var(--ui-fast) var(--ui-ease); }
+.search:focus-within { border-color: var(--cx-orange-hi); box-shadow: 0 0 0 4px var(--ui-ring); }
+.select { border-radius: var(--r-pill); padding: 0 40px 0 20px; background-position: right 16px center; transition: border-color var(--ui-fast) var(--ui-ease), box-shadow var(--ui-fast) var(--ui-ease); }
+.select:focus { border-color: var(--cx-orange-hi); box-shadow: 0 0 0 4px var(--ui-ring); }
+
+.seg { border-radius: 26px; border-color: var(--ui-line-strong); padding: 4px; gap: 4px; }
+.seg button { border-radius: var(--r-pill); border: 0 !important; transition: background-color var(--ui-fast) var(--ui-ease), color var(--ui-fast) var(--ui-ease); }
+.seg button:hover { background: var(--ui-surface-2); }
+.seg button[aria-pressed="true"] { background: var(--ui-sel); color: var(--ui-sel-ink); }
+@media (max-width: 734px) {
+  :root[data-theme] :is(.d-tools .seg, #mon-filter) { border-radius: 24px; }
+}
+
+.chip { border-radius: var(--r-pill); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.fchip { border-radius: var(--r-pill); }
+.fchip[aria-pressed="true"] { background: var(--ui-sel); border-color: var(--ui-sel); color: var(--ui-sel-ink); }
+.switch .track { border-radius: var(--r-pill); border-color: transparent; }
+.switch .track::after { border-radius: 50%; box-shadow: 0 1px 3px rgba(0, 0, 0, .3); }
+.check input { border-radius: 16px; }
+@media (pointer: fine) { .check input { border-radius: 16px; } }
+.act { border-radius: var(--r-pill); padding: 0 14px; }
+.act.link { border-radius: 0; }
+.filter-count { border-radius: var(--r-pill); }
+.social { border-radius: 50%; }
+
+/* =====================================================================
+   7. Icons: orange glyphs; card icons sit in a tinted disc
+   ===================================================================== */
+:root .intent .ic, :root .why-grid .icon-chip, :root .net-hero-tiles [data-icon], :root .pillars .icon-chip {
+  display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 50%;
+  background: var(--ui-tint); color: var(--cx-orange-hi); transition: background-color var(--ui-fast) var(--ui-ease);
+}
+:root .intent .ic .icon, :root .why-grid .icon-chip .icon, :root .net-hero-tiles [data-icon] .icon, :root .pillars .icon-chip .icon { font-size: 22px; }
+:root :is(.intent:hover .ic, .why-grid > div:hover .icon-chip, .net-hero-tiles div:hover [data-icon], .pillars > div:hover .icon-chip) { background: var(--ui-tint-2); color: var(--cx-orange-hi); }
+:root .net-hero-tiles [data-icon] { margin-bottom: 24px; padding-bottom: 0; }
+:root .why-grid .icon-chip { margin-bottom: 24px; }
+:root :is(.feature-body .icon-chip, .feature:last-child .feature-body .icon-chip, .impact-body .icon-chip, .block-head .icon-chip, .panel-head .icon-chip, .side-card .icon-chip) { color: var(--cx-orange-hi); }
+.eyebrow, .hero .eyebrow, .net-hero .eyebrow { color: var(--ui-eyebrow); font-weight: 600; }
+.section.alt, .alt-band { --ui-page-rgb: var(--ui-alt-rgb); }
+.num-plus { color: var(--cx-orange-hi); }
+
+/* =====================================================================
+   8. Cards: one construction everywhere
+   ===================================================================== */
+.intent-grid, .pillars, .why-grid, .net-hero-tiles, .org-grid { gap: 16px; border: 0; }
+.org-grid > li { border: 0; }
+:root :is(.intent, .pillars > div, .why-grid > div, .net-hero-tiles div, .org-card, .d-card, .net-card, .resp) {
+  border: 1px solid var(--ui-line); border-radius: var(--r-card); background: var(--ui-surface); box-shadow: var(--ui-shadow-1); overflow: hidden;
+  transition: transform .5s var(--ui-ease), box-shadow .5s var(--ui-ease), border-color .5s var(--ui-ease), background-color .3s var(--ui-ease);
+}
+:root .net-hero-tiles div { overflow: visible; }
+:root :is(.intent, .org-card, .d-card, .net-card, .resp):is(:hover, :focus-visible) { border-color: var(--ui-line-strong); background: var(--ui-surface-2); }
+@media (hover: hover) {
+  :root :is(.intent, .org-card, .d-card:not(.skeleton), .net-card):hover { transform: translate3d(0, -6px, 0); box-shadow: var(--ui-shadow-2); }
+  :root :is(.why-grid > div, .pillars > div, .resp):hover { box-shadow: var(--ui-shadow-2); border-color: var(--ui-line-strong); }
+}
+.intent::before { content: none; }
+.intent .ic { margin-bottom: 28px; }
+.d-media img.photo, .feature-media img { transition: transform 1.2s var(--ui-ease); }
+.d-card:hover .d-media img.photo, .feature:hover .feature-media img { transform: scale(1.05); }
+.d-media .type-icon { border-radius: 12px; }
+.skeleton, .d-card.skeleton { border-radius: var(--r-card); }
+#mon-list:empty, #orgs:empty, #networks:empty, #responses:empty, #d-grid:empty:has(+ #d-empty[hidden]) { border-radius: var(--r-card); }
+.mon-card { border-radius: 0; }
+.empty-card, .responses .empty { border-radius: var(--r-card); }
+:is(.filter-panel.panel, .filter-panel > .panel), .filter-drawer { border-radius: var(--r-card); background: var(--ui-surface); border: 1px solid var(--ui-line); box-shadow: var(--ui-shadow-1); }
+.net-logo { border-right: 1px solid var(--ui-line); }
+
+/* Loading placeholders: logos read as quiet tiles until the image arrives */
+.resp-logo, img.resp-logo, img.org-logo, .org-logo { border-radius: var(--r-logo); aspect-ratio: 1; }
+img.resp-logo, img.org-logo { background-color: var(--ui-logo-bg); box-shadow: 0 0 0 1px var(--ui-line); }
+.net-logo { background-color: var(--ui-logo-bg); }
+
+/* =====================================================================
+   9. Sidebar cards and plates (disaster, rebuild, networks)
+   ===================================================================== */
+.side { display: flex; flex-direction: column; gap: 16px; }
+.side > .side-card { margin: 0; }
+:root .side-card { border-radius: var(--r-card); border: 1px solid var(--ui-line) !important; box-shadow: var(--ui-shadow-1); }
+:root .side-card.pray, :root .side-card.plain { background: var(--ui-surface) !important; }
+:root .side-card.orange { background: var(--ui-tint) !important; border-color: transparent !important; }
+:root .side-card.navy { background: var(--ui-plate) !important; border-color: var(--ui-plate-line) !important; color: var(--ui-plate-ink) !important; box-shadow: var(--ui-shadow-2); }
+:root .side-card.navy h3 { color: var(--ui-plate-ink); }
+:root .side-card.navy p { color: var(--ui-plate-ink-2) !important; }
+:root .side-card .btn { min-height: 44px; }
+.net-more { border-radius: var(--r-plate); background: var(--ui-plate); border: 1px solid var(--ui-plate-line); color: var(--ui-plate-ink); box-shadow: var(--ui-shadow-2); }
+.net-more h3 { color: var(--ui-plate-ink); }
+.net-more p { color: var(--ui-plate-ink-2); }
+
+/* =====================================================================
+   10. Image treatment
+   Full-bleed photos fade into the page; inline photos are rounded media.
+   ===================================================================== */
+.feature-media, .video, .live-card .video, .video-grid .video { border-radius: var(--r-media); isolation: isolate; overflow: hidden; box-shadow: var(--ui-shadow-1); }
+/* the hairline sits over the page, not over the frame's black fill */
+.video, .live-card .video, .video-grid .video { border-color: var(--ui-line); background-clip: padding-box; }
+.video .play span { border-radius: 50%; transition: transform var(--ui-slow) var(--ui-ease), background-color var(--ui-fast) var(--ui-ease); }
+.video .play:hover span { transform: scale(1.08); }
+.dz-type { border-radius: var(--r-logo); box-shadow: var(--ui-shadow-1); }
+
+/* Home hero: the photo sits right and melts into the page on its left and at the foot. */
+@media (min-width: 1069px) {
+  .hero-bg { left: 51%; width: 49%; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16%); mask-image: linear-gradient(90deg, transparent 0, #000 16%); }
+}
+.hero::before { background: linear-gradient(180deg, rgba(var(--ui-page-rgb), .7) 0, transparent 150px), linear-gradient(0deg, rgb(var(--ui-page-rgb)) 0, rgba(var(--ui-page-rgb), .78) 16%, transparent 40%); }
+
+/* Impact rows: the photo bleeds off the page edge and dissolves toward the copy, top and foot softened. */
+.impact-media { border-radius: 0; background: none; isolation: isolate;
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 62%, transparent 100%), linear-gradient(180deg, transparent 0, #000 14%, #000 82%, transparent 100%); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, #000 0, #000 62%, transparent 100%), linear-gradient(180deg, transparent 0, #000 14%, #000 82%, transparent 100%); mask-composite: intersect; }
+.impact:nth-child(2) .impact-media { border-radius: 0;
+  -webkit-mask-image: linear-gradient(270deg, #000 0, #000 62%, transparent 100%), linear-gradient(180deg, transparent 0, #000 14%, #000 82%, transparent 100%);
+  mask-image: linear-gradient(270deg, #000 0, #000 62%, transparent 100%), linear-gradient(180deg, transparent 0, #000 14%, #000 82%, transparent 100%); }
+:is(.feature-media, .impact-media).media-credit-host::after { content: none; }
+.impact-media.media-credit-host > .media-credit { right: auto; left: calc(var(--cx-bleed) + 20px); bottom: 18%; }
+.impact:nth-child(2) .impact-media.media-credit-host > .media-credit { left: auto; right: calc(var(--cx-bleed) + 20px); }
+
+/* Connective Layer: the plate fades into the page; the pillars float over it as glass cards. */
+.layer-media::before { background: linear-gradient(0deg, rgb(var(--ui-page-rgb)) 0, rgb(var(--ui-page-rgb)) 6%, rgba(var(--ui-page-rgb), .82) 22%, rgba(var(--ui-page-rgb), .35) 38%, transparent 54%), linear-gradient(180deg, rgb(var(--ui-page-rgb)) 0, rgba(var(--ui-page-rgb), 0) 64px); }
+:root .pillars > div { background: var(--ui-glass); -webkit-backdrop-filter: saturate(1.6) blur(18px); backdrop-filter: saturate(1.6) blur(18px); box-shadow: var(--ui-shadow-2); }
+.pillars .icon-chip { margin-bottom: 4px !important; }
+
+/* Long-Term Recovery band: photo right 62%, its left edge fading into the page. */
+@media (min-width: 1069px) {
+  section.band:not(:has(h1)) > .band-bg { left: 38%; right: auto; width: 62%;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 36%), linear-gradient(180deg, transparent 0, #000 16%, #000 64%, transparent 90%); -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(90deg, transparent 0, #000 36%), linear-gradient(180deg, transparent 0, #000 16%, #000 64%, transparent 90%); mask-composite: intersect; }
+  section.band:not(:has(h1))::before { background: linear-gradient(90deg, rgb(var(--ui-page-rgb)) 0, rgba(var(--ui-page-rgb), .85) 38%, rgba(var(--ui-page-rgb), 0) 54%); }
+  section.band:not(:has(h1)) > .media-credit { top: 24px; bottom: auto; }
+}
+section.band:not(:has(h1)) { background: var(--ui-page); }
+
+/* After the Storm: a gallery inside the grid, rounded tiles with small gaps. */
+.mosaic { gap: 8px; }
+@media (min-width: 1069px) { .mosaic { margin-right: 0; } }
+:root .mosaic > img, :root .mosaic > img:nth-of-type(1), :root .mosaic > img:nth-of-type(4) { border-radius: var(--r-media); box-shadow: var(--ui-shadow-1); }
+
+/* Disaster detail: the photo washes into the page behind the title and the meta row. */
+.dz-hero::before { background: linear-gradient(90deg, rgba(var(--ui-page-rgb), .96) 0, rgba(var(--ui-page-rgb), .88) 40%, rgba(var(--ui-page-rgb), .3) 70%, transparent 85%), linear-gradient(0deg, rgb(var(--ui-page-rgb)) 0, rgba(var(--ui-page-rgb), .7) 26%, transparent 55%); }
+/* Rebuild header band */
+.band:has(> .band-inner > h1)::before { background: linear-gradient(0deg, rgb(var(--ui-page-rgb)) 0, rgba(var(--ui-page-rgb), 0) 30%); }
+
+/* Photo credits: one small chip everywhere */
+.media-credit-host > .media-credit, .hero > .media-credit, section.band > .media-credit, .photo-credit {
+  width: fit-content; padding: 4px 8px; border-radius: 6px; background: rgba(0, 0, 0, .45); color: #fff;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font: 500 11px/1.35 var(--cx-text); letter-spacing: .01em; text-shadow: none;
+}
+.photo-credit:empty, .media-credit:empty { display: none; }
+.mosaic > .media-credit--group { background: none; padding: 0; -webkit-backdrop-filter: none; backdrop-filter: none; color: var(--cx-ink-3); }
+
+/* Closing band: the video toggle is a round glass button */
+.media-toggle, .media-toggle:focus-visible { border-radius: 50%; }
+.media-toggle::before { border-radius: 50%; border-color: rgba(255, 255, 255, .45); background: rgba(255, 255, 255, .14); -webkit-backdrop-filter: blur(12px) saturate(1.4); backdrop-filter: blur(12px) saturate(1.4); }
+
+/* =====================================================================
+   11. Maps: rounded frame, round pins
+   ===================================================================== */
+.map-box { border: 1px solid var(--ui-line); border-radius: var(--r-card); overflow: hidden; box-shadow: var(--ui-shadow-1); }
+.map-box .leaflet-bar { border-radius: 14px !important; overflow: hidden; border-color: var(--ui-line-strong) !important; box-shadow: var(--ui-shadow-1) !important; }
+.map-box .leaflet-bar a { background: var(--ui-surface) !important; border-radius: 0 !important; }
+.map-box .leaflet-bar a:hover { background: var(--ui-surface-2) !important; }
+.leaflet-popup-content-wrapper { border-radius: 16px !important; box-shadow: var(--ui-shadow-2) !important; }
+.leaflet-control-attribution { border-radius: 8px 0 0 0; }
+.pin { border: 2px solid var(--ui-page); border-radius: 50%; box-shadow: 0 4px 10px -2px rgba(0, 0, 0, .45); }
+.pin.navy { background: var(--ui-pin); color: var(--ui-pin-ink); }
+
+/* =====================================================================
+   12. Footer, quick search, phone menu, tab bar, sub-nav
+   ===================================================================== */
+:root .socials a { width: 44px; height: 44px; border-radius: 50%; border-color: var(--ui-line-strong); transition: color var(--ui-fast) var(--ui-ease), border-color var(--ui-fast) var(--ui-ease), transform var(--ui-slow) var(--ui-ease); }
+@media (hover: hover) { :root .socials a:hover { transform: translate3d(0, -2px, 0); border-color: var(--cx-ink); } }
+
+.cmdk { -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.cmdk-panel { border-color: var(--ui-line); border-radius: 24px; box-shadow: var(--ui-shadow-2); overflow: hidden; }
+.cmdk-input kbd, .cmdk-foot kbd { border-radius: 6px; }
+.cmdk-item { border-left: 0; margin: 0 8px; border-radius: 12px; }
+.cmdk-item[aria-selected="true"], .cmdk-item:hover { background: var(--ui-surface-2); box-shadow: none; }
+.cmdk-item[aria-selected="true"] .icon { color: var(--cx-orange-hi); }
+/* Close button (added by motion.js): phones only, where there is no Esc key. */
+.cmdk-close { display: none; flex: none; place-items: center; width: 44px; height: 44px; margin-right: -12px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--cx-ink-2); cursor: pointer; }
+.cmdk-close:hover { background: var(--ui-surface-2); color: var(--cx-ink); }
+.cmdk-close svg { width: 20px; height: 20px; }
+@media (pointer: coarse), (max-width: 767px) {
+  .cmdk-close { display: inline-grid; }
+  .cmdk-input kbd, .cmdk-foot { display: none; }
+}
+
+.subnav-links a::after { height: 3px; border-radius: 3px 3px 0 0; }
+
+@media (max-width: 1068px) {
+  .mobile-menu.open { display: flex; flex-direction: column; }
+  .mobile-menu .m-actions { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-top: auto; padding-top: 32px; padding-bottom: calc(env(safe-area-inset-bottom) + 16px); }
+  .mobile-menu .m-actions .btn { min-height: 48px; border-radius: var(--r-pill); box-shadow: none; }
+  .mobile-menu .m-actions .btn:first-child { grid-column: 1 / -1; }
+  .mobile-menu .m-actions .btn:not(:first-child) { background: transparent; border: 1px solid var(--ui-ghost-line); color: var(--cx-ink); }
+  .mobile-menu .m-actions .btn:not(:first-child):hover { background: var(--ui-surface-2); border-color: var(--cx-ink); color: var(--cx-ink); }
+  .mobile-menu { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+}
+@media (max-width: 734px) {
+  .tabbar { background: var(--ui-bar); -webkit-backdrop-filter: saturate(1.8) blur(20px); backdrop-filter: saturate(1.8) blur(20px); border-top: 1px solid var(--ui-line); }
+  .tabbar a { font: 600 11px/1.1 var(--cx-text); }
+  .tabbar a[aria-current="page"] { color: var(--cx-orange-hi); }
+  .tabbar a[aria-current="page"]::before { width: 24px; height: 2px; margin-left: -12px; border-radius: 0 0 2px 2px; background: var(--cx-orange-hi); }
+  .cmdk-panel { border-radius: 0; }
+  .mobile-menu { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+}
+
+/* Sub-nav: an opaque-enough bar, so text scrolling under it never ghosts through */
+.subnav { background: var(--ui-bar); -webkit-backdrop-filter: saturate(1.8) blur(20px); backdrop-filter: saturate(1.8) blur(20px); border-bottom: 1px solid var(--ui-line); }
+@media (max-width: 1068px) {
+  .subnav-links { scroll-padding-inline: 16px; scroll-snap-type: x proximity; }
+  .subnav .btn { min-height: 36px; height: 36px; border-radius: var(--r-pill); padding: 0 14px; box-shadow: none; }
+}
+@media (max-width: 734px) {
+  /* Phone: the bar grows so the 44px Add Response pill keeps 8px clearance above and below */
+  .subnav { height: 60px; }
+  .subnav .btn { min-height: 44px; height: 44px; }
+}
+
+/* =====================================================================
+   13. Filter panel: fits the screen, scrolls inside, actions stay in reach
+   ===================================================================== */
+@media (min-width: 1069px) {
+  .filter-panel { max-height: calc(100svh - 100px); overflow-y: auto; overscroll-behavior: contain; }
+  .filter-panel .filter-foot { position: sticky; bottom: 0; z-index: 2; margin-bottom: -24px; padding-bottom: 24px; background: var(--ui-surface); }
+  .filter-panel .filter-foot::before { content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 32px; background: linear-gradient(0deg, var(--ui-surface), transparent); pointer-events: none; }
+}
+
+/* =====================================================================
+   14. Breakpoints
+   ===================================================================== */
+@media (max-width: 1068px) {
+  .hero::before { background: linear-gradient(180deg, rgba(var(--ui-page-rgb), .7) 0, transparent 120px), linear-gradient(0deg, rgb(var(--ui-page-rgb)) 0, rgb(var(--ui-page-rgb)) 40%, rgba(var(--ui-page-rgb), .9) 56%, rgba(var(--ui-page-rgb), .3) 74%, transparent 86%); }
+  .impact-media, .impact:nth-child(2) .impact-media { border-radius: 0;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 66%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 66%, transparent 100%); }
+  .impact-media.media-credit-host > .media-credit, .impact:nth-child(2) .impact-media.media-credit-host > .media-credit { left: auto; right: var(--cx-side); top: 12%; bottom: auto; }
+  .band:has(> .band-inner > h1)::before { background: linear-gradient(0deg, rgb(var(--ui-page-rgb)) 0, rgba(var(--ui-page-rgb), .8) 35%, transparent 75%); }
+  .mosaic { gap: 8px; margin-inline: 0; }
+  .mosaic > .media-credit--group { padding: 0; }
+  :root .mosaic > img, :root .mosaic > img:nth-of-type(1), :root .mosaic > img:nth-of-type(4) { border-radius: var(--r-media); }
+  /* Connective Layer credit: a small chip top right on the plate, never stretched */
+  .layer-media.media-credit-host > .media-credit { top: 12px; bottom: auto; right: var(--cx-side); }
+  /* Long-Term Recovery: a 16:9 photo on top that fades away; the copy follows on the page, never over the picture */
+  section.band:not(:has(h1)) { flex-direction: column; align-items: stretch; min-height: 0; }
+  section.band:not(:has(h1)) > .band-bg { position: relative; inset: auto; left: 0; width: 100%; height: auto; aspect-ratio: 16 / 9;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 7%, #000 54%, transparent 97%); mask-image: linear-gradient(180deg, transparent 0, #000 7%, #000 54%, transparent 97%); }
+  section.band:not(:has(h1))::before { content: none; }
+  section.band:not(:has(h1)) .band-inner { position: relative; z-index: 2; margin-top: -40px; padding-block: 0 96px; }
+  section.band:not(:has(h1)) > .media-credit { top: 12px; bottom: auto; right: var(--cx-side); }
+}
+@media (max-width: 734px) {
+  /* Home hero: a shorter photo, so the eyebrow, headline, lede and first CTA clear the tab bar on the first view */
+  .hero { padding-top: 34svh; padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
+  .hero-bg { height: 56svh; }
+  .hero::before { background: linear-gradient(180deg, rgba(var(--ui-page-rgb), .7) 0, transparent 112px, transparent 16svh, rgba(var(--ui-page-rgb), .9) 33svh, rgb(var(--ui-page-rgb)) 46svh); }
+  .hero-inner { padding-bottom: 24px; }
+  .hero-inner h1 { margin-bottom: 16px; }
+  section.band::before, .band:has(> .band-inner > h1)::before { background: linear-gradient(180deg, rgba(var(--ui-page-rgb), .55) 0, transparent 56px), linear-gradient(0deg, rgb(var(--ui-page-rgb)) 0, rgba(var(--ui-page-rgb), .6) 20%, transparent 45%); }
+  .dz-hero::before { background: linear-gradient(0deg, rgb(var(--ui-page-rgb)) 0, rgba(var(--ui-page-rgb), .9) 45%, rgba(var(--ui-page-rgb), .55) 100%); }
+  .intent-grid, .org-grid, .pillars, .why-grid, .net-hero-tiles { gap: 12px; }
+  .net-logo { border-right: 0; border-radius: var(--r-logo); box-shadow: 0 0 0 1px var(--ui-line); }
+  .net-more { border-radius: var(--r-card); }
+  section.band:not(:has(h1)) .band-inner { margin-top: 0; padding: 0 16px 64px; }
+  .band:has(> .band-inner > h1) .band-bg { -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 100%); mask-image: linear-gradient(180deg, #000 60%, transparent 100%); }
+}
+
+/* Response cards: the card's main action is always the solid ink pill (white on black, ink on white) */
+:root .resp-actions .btn-dark { background: var(--cx-ink); border-color: var(--cx-ink); color: var(--ui-page); }
+@media (hover: hover) { :root .resp-actions .btn-dark:hover { background: var(--cx-ink); border-color: var(--cx-ink); color: var(--ui-page); opacity: .88; } }
+/* actions and footer share one wrapper: invisible on desktop, a swipeable pill row on phone */
+.resp-bar { display: contents; }
+
+/* Phone card density: icon disc left, words right, chevron for links. No copy removed. */
+@media (max-width: 599px) {
+  :root .intent { display: grid; grid-template-columns: 44px minmax(0, 1fr) 20px; grid-template-areas: "ic t go" "ic d go"; column-gap: 16px; row-gap: 4px; align-items: center; min-height: 0; padding: 16px; }
+  :root .intent .ic { grid-area: ic; align-self: start; margin: 0; }
+  :root .intent b { grid-area: t; font-size: 17px; }
+  :root .intent span.d { grid-area: d; min-height: 0; font-size: 14px; }
+  :root .intent .go { grid-area: go; display: inline-flex; justify-content: flex-end; min-height: 44px; margin: 0; font-size: 0; color: var(--cx-ink-3); }
+  :root .intent .go .icon { font-size: 18px; }
+  :root :is(.pillars > div, .why-grid > div, .net-hero-tiles div) { display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 16px; row-gap: 4px; align-content: start; min-height: 0; padding: 16px; }
+  :root :is(.pillars > div, .why-grid > div, .net-hero-tiles div) > :first-child { grid-row: 1 / span 2; margin: 0 !important; }
+  :root :is(.pillars > div, .why-grid > div, .net-hero-tiles div) > :is(h3, h4) { margin: 0; font-size: 17px; align-self: end; }
+  :root :is(.pillars > div, .why-grid > div, .net-hero-tiles div) > p { margin: 0; font-size: 14px; }
+
+  /* Response cards: tags run full width under the logo row; every action is one wrapping row of ghost pills */
+  .resp { padding: 16px 16px 0; }
+  .resp-top { grid-template-columns: 48px minmax(0, 1fr); column-gap: 12px; row-gap: 8px; }
+  main .resp-logo { width: 48px; height: 48px; grid-row: 1 / span 2; }
+  .resp-head { display: contents; }
+  .resp-head > .pill { grid-column: 2; grid-row: 1; justify-self: start; align-self: end; }
+  .resp-head > h3 { grid-column: 2; grid-row: 2; align-self: start; font-size: 20px; }
+  .resp-head > .resp-tags { grid-column: 1 / -1; grid-row: 3; }
+  .resp-info { margin-top: 12px; gap: 4px 20px; }
+  .resp-text { margin-top: 10px; }
+  .resp { display: flex; flex-wrap: wrap; align-items: center; column-gap: 8px; padding-bottom: 16px; }
+  .resp > * { flex: 0 0 100%; min-width: 0; }
+  /* "Read more" sits on the end of the clamped text's last line, over a fade, instead of taking its own row */
+  .resp > .read-more { position: relative; z-index: 1; flex: 0 0 auto; margin: -34px 0 -10px auto; padding-left: 48px; background: linear-gradient(90deg, transparent 0, var(--ui-surface) 40px) center / 100% 26px no-repeat; }
+  .resp > .resp-text.open + .read-more { margin: 0 auto 0 0; padding-left: 0; background: none; }
+  /* every action on one swipeable row of pills */
+  .resp > .resp-bar { display: flex; flex: 0 0 calc(100% + 32px); flex-wrap: nowrap; gap: 8px; margin: 14px -16px 0; padding: 0 16px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scroll-padding-inline: 16px; scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 28px), transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 28px), transparent 100%); }
+  .resp > .resp-bar::-webkit-scrollbar { display: none; }
+  .resp-actions, .resp-foot { display: contents; }
+  :root .resp-actions > *, :root .resp-foot > * { flex: 0 0 auto; margin-top: 0; white-space: nowrap; scroll-snap-align: start; }
+  .resp-actions .btn, .resp-foot a, .resp-foot button { min-height: 44px; padding: 0 14px; border: 1px solid var(--ui-ghost-line); border-radius: var(--r-pill); background: transparent; color: var(--cx-ink); font-size: 14px; }
+  .resp-foot a:hover, .resp-foot button:hover { text-decoration: none; background: var(--ui-surface-2); }
+}
+}
+
+/* =====================================================================
+   15. Reduced motion: no lifts, shadows and borders still respond
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  :root :is(.intent, .org-card, .d-card, .net-card, .btn, .socials a):hover { transform: none !important; }
+  .btn:active { transform: none !important; }
+  .d-card:hover .d-media img.photo, .feature:hover .feature-media img, .video .play:hover span { transform: none !important; }
+}

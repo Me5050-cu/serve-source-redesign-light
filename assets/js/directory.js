@@ -68,11 +68,13 @@ function responseCard(r, { planned = 'Scheduled' } = {}) {
       ${r.start_date ? `<span>${icon('calendar')}<span>${fmtDate(r.start_date)}${r.end_date ? ` → ${fmtDate(r.end_date)}` : ''}</span></span>` : ''}
     </div>
     ${r.narrative ? `<p class="resp-text">${esc(r.narrative)}</p><button class="read-more">Read more</button>` : ''}
+    <div class="resp-bar">
     ${actions.length || socials.length ? `<div class="resp-actions">${actions.join('')}${socials.join('')}</div>` : ''}
     <div class="resp-foot">
       ${o.url ? `<a href="${esc(o.url)}" target="_blank" rel="noopener">View Org ${icon('chevronRight')}</a>` : ''}
       <button class="locate" data-locate="${esc(r.id)}">${icon('pin')}Show on map</button>
       <button class="act-pray" data-pray="${esc(r.id)}">${icon('hands')}I’m Praying</button>
+    </div>
     </div>
   </li>`;
 }

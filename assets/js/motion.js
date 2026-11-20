@@ -1,5 +1,7 @@
-// Motion layer for the white Cinema demo (ported from the light demo): scroll reveals, count-up figures, header glass, scroll progress, hero drift,
-// band parallax and smooth in-page links. Loaded in <head> by theme.js (after media.js); styles in assets/css/motion.css.
+// Motion layer, shared byte-for-byte by the dark and the light build: scroll reveals, count-up figures, header state, scroll progress,
+// band parallax, smooth in-page links and the phone close button on quick search. Loaded in <head> by theme.js (after media.js);
+// styles in assets/css/motion.css and assets/css/themes/cinema-ui.css.
+// Hero and page-hero copy is never hidden: it is not in the reveal lists, and the hero tiles only reveal when they start below the fold.
 // Progressive enhancement throughout:
 //   - Nothing is hidden unless this file puts .mo-js on <html>, which it skips for prefers-reduced-motion or when
 //     IntersectionObserver is missing. If the observer has not reported within 2.5 s, everything is revealed.
@@ -20,10 +22,8 @@
     '.layer-body > h2', '.storm-body > h2'
   ];
   var ITEMS = [
-    // heroes and fronts
-    '.hero-inner > *', '.hero-stats', '.page-hero > .wrap > *',
-    '.net-hero > :first-child > *', '.net-hero-tiles > div', '.dz-hero-inner > :not(.photo-credit)',
-    'section.band:not(:has(h1)) > .band-inner', 'section.band:has(h1) > .band-inner > *', '.cta > .band-inner > *',
+    // bands below the fold (the hero, page heroes and the Rebuild header band are never hidden)
+    'section.band:not(:has(h1)) > .band-inner', '.cta > .band-inner > *',
     // home
     '.intent', '.feature', '.impact', '.checks li', '.pillars > div', '.layer-body > .lede', '.storm-body > :not(h2)',
     // cards, rows and registers rendered from data
@@ -32,11 +32,13 @@
     // colophon
     '.footer-note', '.footer-grid > *', '.footer-bottom'
   ];
+  // Only tagged when they start below the fold on the first scan (part of a page hero on wide screens).
+  var FOLD = ['.net-hero-tiles > div'];
   var IMGS = ['.feature-media > img', '.impact-media > img', '.layer-media > img', '.mosaic > img', '.d-card:not(.skeleton) .d-media > img:not(.type-icon)'];
   var HEX = [];
   var SKIP = '.brand-backdrop, .site-header, .utility-bar, .mobile-menu, .cmdk, .tabbar, .subnav, .mock-ribbon, .leaflet-container, [hidden]';
 
-  var DUR = { item: 760, head: 760, img: 1300, hex: 900 };
+  var DUR = { item: 520, head: 520, img: 1300, hex: 900 };
   var STEP = 70, MAX_STAGGER = 5;
 
   var io = null, ioAlive = false, queue = [], flushPending = false;
@@ -47,8 +49,16 @@
     el.setAttribute('data-mo', 'r');
     io.observe(el);
   }
+  var firstScan = true;
   function scan() {
     if (!io) return;
+    if (firstScan) {
+      firstScan = false;
+      for (var f = 0; f < FOLD.length; f++) {
+        var fl = document.querySelectorAll(FOLD[f]);
+        for (var k = 0; k < fl.length; k++) if (fl[k].getBoundingClientRect().top >= window.innerHeight) tag(fl[k], 'item');
+      }
+    }
     var groups = [[HEADS, 'head'], [IMGS, 'img'], [HEX, 'hex'], [ITEMS, 'item']];
     for (var g = 0; g < groups.length; g++) {
       var sels = groups[g][0];
@@ -272,8 +282,29 @@
     }
   }
 
+  /* ---------- Quick search: a close button for phones (no Esc key there); cinema-ui.css shows it on touch ---------- */
+  function addSearchClose() {
+    var input = document.querySelector('.cmdk-input');
+    if (!input || input.querySelector('.cmdk-close')) return !!input;
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'cmdk-close'; b.setAttribute('aria-label', 'Close search');
+    b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+    b.addEventListener('click', function (e) {
+      e.preventDefault(); e.stopPropagation();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    });
+    input.appendChild(b);
+    return true;
+  }
+
   /* ---------- Start ---------- */
   function start() {
+    try {
+      if (!addSearchClose()) {
+        var cm = new MutationObserver(function () { if (addSearchClose()) cm.disconnect(); });
+        cm.observe(document.body, { childList: true });
+      }
+    } catch (e) {}
     try {
       bar = document.createElement('div');
       bar.className = 'mo-progress'; bar.setAttribute('aria-hidden', 'true');
@@ -287,7 +318,7 @@
 
     if (!animate) return;
     try {
-      io = new IntersectionObserver(onIO, { rootMargin: '0px 0px -4% 0px', threshold: 0 });
+      io = new IntersectionObserver(onIO, { rootMargin: '0px 0px -5% 0px', threshold: 0 });
       countIO = new IntersectionObserver(function (entries) {
         for (var i = 0; i < entries.length; i++) if (entries[i].isIntersecting) { countIO.unobserve(entries[i].target); startCount(entries[i].target); }
       }, { rootMargin: '0px 0px -3% 0px', threshold: 0 });

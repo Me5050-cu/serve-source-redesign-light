@@ -1,4 +1,5 @@
-// White build: themes/cinema-white.css (the daylight layer) loads right after themes/cinema.css.
+// White build: themes/cinema-ui.css (the shared component layer) loads right after themes/cinema.css, then
+// themes/cinema-white.css (the daylight palette).
 // Preview switcher: design direction (?theme=civic|cinema), colorway (?colorway=<id>) and typeface (?type=system|barlow).
 // Loaded in <head> so every stylesheet below blocks rendering and the first paint is already right.
 // Each choice is remembered in localStorage (ss-theme, ss-colorway, ss-type) unless the page is a compare frame (?frame=1).
@@ -53,7 +54,7 @@
     '<link rel="stylesheet" id="ss-barlow" href="' + REG.barlowHref + '">';
   document.write((ty === 'barlow' ? font : '') +
     '<link rel="stylesheet" href="assets/css/lettering.css"><link rel="stylesheet" href="assets/css/colorways.css">' +
-    '<link rel="stylesheet" href="assets/css/themes/' + t + '.css"><link rel="stylesheet" href="assets/css/themes/cinema-white.css"><script src="assets/js/themes/' + t + '.js"><\/script>' +
+    '<link rel="stylesheet" href="assets/css/themes/' + t + '.css"><link rel="stylesheet" href="assets/css/themes/cinema-ui.css"><link rel="stylesheet" href="assets/css/themes/cinema-white.css"><script src="assets/js/themes/' + t + '.js"><\/script>' +
     '<script src="assets/js/media.js"><\/script>' +
     '<link rel="stylesheet" href="assets/css/motion.css"><script src="assets/js/motion.js"><\/script>');
 
