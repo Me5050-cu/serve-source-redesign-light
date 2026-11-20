@@ -1,88 +1,63 @@
-/* Motion layer for the light demo (loaded by theme.js after the Civic stylesheet; driven by assets/js/motion.js).
+/* Motion layer for the white Cinema demo (loaded by theme.js after themes/cinema.css and themes/cinema-white.css;
+   driven by assets/js/motion.js, ported from the light demo).
    Progressive enhancement: nothing is hidden unless motion.js has put .mo-js on <html>, and motion.js never adds it
    when the reader prefers reduced motion. Only opacity, transform and clip-path animate, so nothing reflows. */
 :root {
   --mo-ease: cubic-bezier(.16, 1, .3, 1);
-  --mo-dur: 600ms;
-  --mo-rise: 16px;
+  --mo-dur: 760ms;
+  --mo-rise: 28px;
 }
 
 /* ---------- Scroll reveals ---------- */
-/* Pending: faded and lowered. motion.js sets data-mo="r", then "in" when the element enters the viewport,
-   then "done" once the transition has finished (so the element's own hover transitions take over again). */
+/* Pending: faded and lowered. motion.js sets data-mo="r", then "in" when the element enters the viewport (staggered
+   70ms in reading order), then "done" once the transition has finished so the element's own hover transitions return. */
 html.mo-js [data-mo="r"] { opacity: 0; transform: translate3d(0, var(--mo-rise), 0); }
 html.mo-js [data-mo="in"] { opacity: 1; transform: none; transition: opacity var(--mo-dur) var(--mo-ease) var(--mo-delay, 0ms), transform var(--mo-dur) var(--mo-ease) var(--mo-delay, 0ms); }
+html.mo-js [data-mo-k="head"][data-mo="r"] { transform: translate3d(0, 20px, 0); }
 
-/* Headings rise a little less, paragraphs a little less again: the eye reads the stagger, not the distance. */
-html.mo-js [data-mo-k="head"][data-mo="r"] { transform: translate3d(0, 12px, 0); }
-
-/* Photos: a soft zoom-out inside a clip that opens to the photo's own 12px corners. */
-html.mo-js [data-mo-k="img"][data-mo="r"] { opacity: 0; transform: scale(1.08); clip-path: inset(8% 8% 8% 8% round 12px); }
-html.mo-js [data-mo-k="img"][data-mo="in"] { opacity: 1; transform: none; clip-path: inset(0 0 0 0 round 12px); transition: opacity 900ms var(--mo-ease) var(--mo-delay, 0ms), transform 1200ms var(--mo-ease) var(--mo-delay, 0ms), clip-path 1200ms var(--mo-ease) var(--mo-delay, 0ms); }
-/* The hexagon photos and the accent shapes pop into the comb. */
-html.mo-js [data-mo-k="hex"][data-mo="r"] { opacity: 0; transform: scale(.86); }
-html.mo-js [data-mo-k="hex"][data-mo="in"] { transition-duration: 900ms; }
-.mosaic::before, .mosaic::after { transition: opacity .9s var(--mo-ease) .5s, transform .9s var(--mo-ease) .5s; }
-html.mo-js .mosaic:not(.mo-seen)::before, html.mo-js .mosaic:not(.mo-seen)::after { opacity: 0; transform: scale(.4); }
-/* Section rules: the orange segment draws in from the left when its head arrives. */
-html.mo-js [data-mo-k="head"]::after { transform-origin: left center; transition: transform 900ms var(--mo-ease) calc(var(--mo-delay, 0ms) + 200ms); }
-html.mo-js [data-mo-k="head"][data-mo="r"]::after { transform: scaleX(0); }
+/* Photos: a soft zoom-out inside a clip that opens up. */
+html.mo-js [data-mo-k="img"][data-mo="r"] { opacity: 0; transform: scale(1.1); clip-path: inset(6% 6% 6% 6% round 18px); }
+html.mo-js [data-mo-k="img"][data-mo="in"] { opacity: 1; transform: none; clip-path: inset(0 0 0 0 round 0); transition: opacity 900ms var(--mo-ease) var(--mo-delay, 0ms), transform 1300ms var(--mo-ease) var(--mo-delay, 0ms), clip-path 1300ms var(--mo-ease) var(--mo-delay, 0ms); }
+/* The Connective Layer plate is a whole screen wide: it only settles (no clip), so its white fade is never cut. */
+html.mo-js .layer-media > img[data-mo="r"] { clip-path: none; transform: scale(1.08); opacity: 0; }
 
 /* ---------- Count-up figures ---------- */
 .mo-num { display: inline-block; text-align: right; font-variant-numeric: tabular-nums lining-nums; }
 .mo-sr { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* ---------- Scroll progress: a thin orange line across the very top ---------- */
-.mo-progress { position: fixed; top: 0; left: 0; right: 0; z-index: 1200; height: 3px; background: var(--ss-accent); transform-origin: 0 50%; transform: scaleX(0); pointer-events: none; }
+.mo-progress { position: fixed; top: 0; left: 0; right: 0; z-index: 1200; height: 3px; background: linear-gradient(90deg, #cc5500, #ff7a1a); transform-origin: 0 50%; transform: scaleX(0); pointer-events: none; }
 
-/* ---------- Header: glass and a soft shadow once the page moves ---------- */
-.site-header::before, .subnav::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--ss-page); transition: background-color .35s var(--mo-ease), box-shadow .35s var(--mo-ease); pointer-events: none; }
-.site-header, .site-header.on-dark, .subnav { transition: height .35s var(--mo-ease), border-color .35s var(--mo-ease); }
-.site-header { isolation: isolate; }
-.subnav { isolation: isolate; }
-html.mo-scrolled .site-header, html.mo-scrolled .site-header.on-dark { background: transparent; border-bottom-color: transparent; }
-html.mo-scrolled .site-header::before { background: rgb(255 255 255 / .82); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); box-shadow: 0 1px 0 rgb(15 23 42 / .06), 0 12px 32px -18px rgb(15 23 42 / .28); }
-/* Pages with a sticky sub-nav: the sub-nav is what stays, so it takes the glass. */
-html.mo-scrolled body.has-subnav .site-header::before { background: var(--ss-page); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; }
-html.mo-scrolled body.has-subnav .site-header { border-bottom-color: var(--cv-hair, #e2e8f0); }
-html.mo-scrolled .subnav { background: transparent; border-bottom-color: transparent; }
-html.mo-scrolled .subnav::before { background: rgb(255 255 255 / .82); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); box-shadow: 0 1px 0 rgb(15 23 42 / .06), 0 12px 32px -18px rgb(15 23 42 / .28); }
-/* The open mega panel and phone menu keep a solid page behind them. */
-html.mo-scrolled .site-header:has(.nav-item.open, .mobile-menu.open)::before { background: var(--ss-page); }
-/* Tablet and phone: the bar tightens by 8px once scrolled. */
+/* ---------- Header: tightens once the page moves (the glass itself is in cinema-white.css) ---------- */
+.site-header .brand img { transition: width .35s var(--mo-ease), height .35s var(--mo-ease); }
+html.cx-scrolled .site-header, html.cx-scrolled .site-header.on-dark { height: calc(var(--nav-h) - 8px); }
+html.cx-scrolled .site-header .brand img { width: 30px; height: 30px; }
 @media (max-width: 1068px) {
-  html.mo-scrolled .site-header, html.mo-scrolled .site-header.on-dark { height: calc(var(--nav-h) - 8px); }
-  html.mo-scrolled .site-header .brand img { width: 24px; height: 24px; }
-  .site-header .brand img { transition: width .35s var(--mo-ease), height .35s var(--mo-ease); }
+  html.cx-scrolled .site-header .brand img { width: 28px; height: 28px; }
+}
+/* Pages with a sticky sub-nav keep the header's full height so the sub-nav never jumps. */
+html.cx-scrolled body.has-subnav .site-header { height: var(--nav-h); }
+html.cx-scrolled body.has-subnav .site-header .brand img { width: 36px; height: 36px; }
+
+/* ---------- Hero photos: a slow zoom; inner page heroes settle once ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes mo-kb { from { transform: scale(1); } to { transform: scale(1.08); } }
+  @keyframes cx-settle { from { transform: scale(1.06); } to { transform: scale(1); } }
+  .hero { overflow: hidden; }
+  .hero > .hero-bg { transform-origin: 70% 40%; animation: mo-kb 26s ease-in-out infinite alternate; }
+  .dz-hero > .dz-hero-bg,
+  .band:has(> .band-inner > h1) > .band-bg { animation: cx-settle 2.6s var(--mo-ease) both; transform-origin: 60% 45%; }
+}
+/* The Long-Term Recovery band drifts with the scroll on desktop (motion.js writes --mo-par). */
+@media (min-width: 1069px) and (prefers-reduced-motion: no-preference) {
+  section.band:not(:has(h1)) { overflow: hidden; }
+  section.band:not(:has(h1)) > img.band-bg { transform-origin: 50% 0; transform: translate3d(0, var(--mo-par, 0px), 0) scale(1.08); will-change: transform; }
 }
 
-/* ---------- Hero photos: a slow Ken Burns zoom ----------
-   The photo grows from the edge it shares with the viewport, and a matching clip keeps it inside its own frame
-   (clip-path is drawn in the photo's local space, so inset = 1 - 1/scale on the side that would spill). */
-@media (min-width: 1069px) {
-  @keyframes mo-kb-desk { 0% { transform: scale(1); clip-path: inset(0 0 0 0); } 50% { transform: scale(1.04); clip-path: inset(0 0 0 3.846%); } 100% { transform: scale(1.08); clip-path: inset(0 0 0 7.407%); } }
-  .hero > .hero-bg { transform-origin: 100% 50%; animation: mo-kb-desk 24s ease-in-out infinite alternate; }
-  /* The S9 photo band drifts with the scroll (motion.js writes --mo-par); scaled so its edges never show. */
-  /* Scaled from the top edge so the workers' heads stay in frame; it only ever moves up, never past the top. */
-  section.band:not(:has(h1)) > img.band-bg { transform-origin: 50% 0; transform: translate3d(0, var(--mo-par, 0px), 0) scale(1.08); object-position: 50% 0 !important; will-change: transform; }
-}
-@media (max-width: 1068px) {
-  @keyframes mo-kb-stack { 0% { transform: scale(1); clip-path: inset(0 0 0 0); } 50% { transform: scale(1.04); clip-path: inset(0 0 3.846% 0); } 100% { transform: scale(1.08); clip-path: inset(0 0 7.407% 0); } }
-  .hero > .hero-bg { transform-origin: 50% 0; animation: mo-kb-stack 24s ease-in-out infinite alternate; }
-}
-
-/* ---------- Hover: cards and buttons lift ---------- */
-:root .intent-grid > .intent, :root .d-grid > .d-card:not(.skeleton) { transition: transform .45s var(--mo-ease), box-shadow .45s var(--mo-ease), border-color .45s var(--mo-ease); }
+/* ---------- Hover: arrows nudge ---------- */
 @media (hover: hover) {
-  :root .intent-grid > .intent:hover, :root .d-grid > .d-card:not(.skeleton):hover { transform: translate3d(0, -6px, 0); box-shadow: var(--cv-lift); border-color: var(--cv-hair-strong, #cbd5e1); }
-  .org-card:hover .org-logo, .net-card:hover .net-logo { transform: translate3d(0, -4px, 0); box-shadow: 0 18px 36px -22px rgb(30 58 95 / .45); }
-  .net-card:hover .net-logo img { transform: scale(1.04); }
-  .btn { transition: background-color .2s var(--mo-ease), color .2s var(--mo-ease), border-color .2s var(--mo-ease), transform .35s var(--mo-ease), box-shadow .35s var(--mo-ease); }
-  .btn:hover { transform: translate3d(0, -2px, 0); }
-  .btn-primary:hover, :root .page-hero .hero-row > .btn-dark:hover, :root .side-card.navy .btn-light:hover { box-shadow: 0 12px 24px -12px rgb(204 85 0 / .6); }
-  .btn:active { transform: none; box-shadow: none; transition-duration: .08s; }
-  .link-more .icon, .intent .go .icon, .d-foot .go .icon, .org-go .icon, .net-go .icon { transition: transform .35s var(--mo-ease); }
-  .link-more:hover .icon, .intent:hover .go .icon, .d-card:hover .d-foot .go .icon, .org-card:hover .org-go .icon, :root .net-card:hover .net-go .icon { transform: translate3d(3px, 0, 0); }
+  .link-more:hover .icon, .intent:hover .go .icon, .d-card:hover .d-foot .go .icon, .org-card:hover .org-go .icon, .net-card:hover .net-go .icon, .btn:hover .icon { transform: translate3d(4px, 0, 0); }
+  .btn .icon { transition: transform .45s var(--mo-ease); }
 }
 
 /* ---------- In-page anchors land below the sticky bars ---------- */
@@ -92,10 +67,8 @@ body.has-subnav main [id] { scroll-margin-top: 72px; }
 /* ---------- Reduced motion: everything shown, nothing moves ---------- */
 @media (prefers-reduced-motion: reduce) {
   html.mo-js [data-mo] { opacity: 1 !important; transform: none !important; clip-path: none !important; transition: none !important; }
-  .hero > .hero-bg { animation: none; }
-  section.band > img.band-bg { transform: none !important; }
-  .mosaic::before, .mosaic::after { opacity: 1 !important; transform: none !important; transition: none; }
-  .btn:hover, :root .intent-grid > .intent:hover, :root .d-grid > .d-card:hover, .org-card:hover .org-logo, .net-card:hover .net-logo, .net-card:hover .net-logo img { transform: none !important; }
-  .mo-progress { transition: none; }
-  .site-header, .subnav, .site-header::before, .subnav::before { transition: none; }
+  .hero > .hero-bg, .dz-hero > .dz-hero-bg, .band > .band-bg { animation: none !important; transform: none !important; }
+  .btn:hover, .intent:hover, .d-card:hover, .org-card:hover, .net-card:hover, .socials a:hover { transform: none !important; }
+  .btn:hover .icon, .link-more:hover .icon { transform: none !important; }
+  .site-header, .subnav, .site-header .brand img { transition: none !important; }
 }

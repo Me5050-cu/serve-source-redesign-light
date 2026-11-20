@@ -107,7 +107,7 @@
       'tropical-storm-rachel-eastern-pacific': rep(DVIDS_SAWYERS, 'U.S. Army photo by 2nd Lt. Jacob Moir'),
       'nepal–tibet-flash-flood-august-2026': rep(DVIDS + '2410/8717195/1000w_q95.jpg', 'Photo by Jocelyn Augustino / FEMA'),
       'southeast-ohio-flooding-august-2026': rep(DVIDS + '2211/7522368/1000w_q95.jpg', 'Jocelyn Augustino / FEMA'),
-      // Two flood cards sit side by side on home and the Disasters grid: the second takes another flood photo from the set.
+      // Two flooding events side by side both fell back to the one Flooding stand-in; the second takes the other flood photo.
       'four-corners-flooding-october-2026': rep(DVIDS + '2211/7522368/1000w_q95.jpg', 'Jocelyn Augustino / FEMA')
     });
   } catch (e) {}
@@ -233,8 +233,7 @@
         var m = mosaics[i], tiles = m.querySelectorAll(':scope > img[data-media-slot]'), parts = [];
         for (var j = 0; j < tiles.length; j++) {
           if (tiles[j].hasAttribute('data-media-failed')) continue;
-          var cr = tiles[j].getAttribute('data-credit');
-          if (cr && parts.indexOf(cr) < 0) parts.push(cr);
+          parts.push(tiles[j].getAttribute('data-credit'));
         }
         var c = m.querySelector(':scope > .media-credit--group');
         if (!parts.length) { if (c) m.removeChild(c); continue; }

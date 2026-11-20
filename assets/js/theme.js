@@ -1,3 +1,4 @@
+// White build: themes/cinema-white.css (the daylight layer) loads right after themes/cinema.css.
 // Preview switcher: design direction (?theme=civic|cinema), colorway (?colorway=<id>) and typeface (?type=system|barlow).
 // Loaded in <head> so every stylesheet below blocks rendering and the first paint is already right.
 // Each choice is remembered in localStorage (ss-theme, ss-colorway, ss-type) unless the page is a compare frame (?frame=1).
@@ -9,7 +10,7 @@
 (function () {
   var REG = {
     themes: [
-      ['civic', 'Civic', 'Newsroom, institutional'],
+      ['cinema', 'Cinema', 'Flagship, field photography'],
     ],
     colorways: [
       ['platform', 'Platform', "The guide's web decisions (default)"],
@@ -26,7 +27,7 @@
   };
   var ids = function (list) { return list.map(function (x) { return x[0]; }); };
   REG.ids = { theme: ids(REG.themes), colorway: ids(REG.colorways), type: ids(REG.types) };
-  REG.defaults = { theme: 'civic', colorway: 'daylight', type: 'system' };
+  REG.defaults = { theme: 'cinema', colorway: 'platform', type: 'system' };
   window.SS_PREVIEW = REG;
   var me = document.currentScript;
   if (me && me.hasAttribute('data-registry')) return;
@@ -41,7 +42,7 @@
     if (ok.indexOf(v) < 0) { if (v) store(key, REG.defaults[key]); v = REG.defaults[key]; }
     return v;
   }
-  var t = 'civic', cw = 'daylight', ty = 'barlow'; // demo: Civic + Daylight + Barlow (the black demo's face), not switchable
+  var t = 'cinema', cw = REG.defaults.colorway, ty = REG.defaults.type; // demo: Cinema only
   REG.theme = t; REG.colorway = cw; REG.type = ty; REG.frame = frame;
   root.setAttribute('data-theme', t);
   root.setAttribute('data-media', 'field');
@@ -52,7 +53,7 @@
     '<link rel="stylesheet" id="ss-barlow" href="' + REG.barlowHref + '">';
   document.write((ty === 'barlow' ? font : '') +
     '<link rel="stylesheet" href="assets/css/lettering.css"><link rel="stylesheet" href="assets/css/colorways.css">' +
-    '<link rel="stylesheet" href="assets/css/themes/' + t + '.css"><script src="assets/js/themes/' + t + '.js"><\/script>' +
+    '<link rel="stylesheet" href="assets/css/themes/' + t + '.css"><link rel="stylesheet" href="assets/css/themes/cinema-white.css"><script src="assets/js/themes/' + t + '.js"><\/script>' +
     '<script src="assets/js/media.js"><\/script>' +
     '<link rel="stylesheet" href="assets/css/motion.css"><script src="assets/js/motion.js"><\/script>');
 

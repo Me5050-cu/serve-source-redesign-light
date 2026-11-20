@@ -1,4 +1,4 @@
-// Motion layer for the light demo: scroll reveals, count-up figures, header glass, scroll progress, hero drift,
+// Motion layer for the white Cinema demo (ported from the light demo): scroll reveals, count-up figures, header glass, scroll progress, hero drift,
 // band parallax and smooth in-page links. Loaded in <head> by theme.js (after media.js); styles in assets/css/motion.css.
 // Progressive enhancement throughout:
 //   - Nothing is hidden unless this file puts .mo-js on <html>, which it skips for prefers-reduced-motion or when
@@ -32,12 +32,12 @@
     // colophon
     '.footer-note', '.footer-grid > *', '.footer-bottom'
   ];
-  var IMGS = ['.feature-media > img', '.impact-media > img', '.layer-media > img', '.d-card:not(.skeleton) .d-media > img:not(.type-icon)'];
-  var HEX = ['.mosaic > img'];
-  var SKIP = '.site-header, .utility-bar, .mobile-menu, .cmdk, .tabbar, .subnav, .mock-ribbon, .leaflet-container, [hidden]';
+  var IMGS = ['.feature-media > img', '.impact-media > img', '.layer-media > img', '.mosaic > img', '.d-card:not(.skeleton) .d-media > img:not(.type-icon)'];
+  var HEX = [];
+  var SKIP = '.brand-backdrop, .site-header, .utility-bar, .mobile-menu, .cmdk, .tabbar, .subnav, .mock-ribbon, .leaflet-container, [hidden]';
 
-  var DUR = { item: 600, head: 600, img: 1200, hex: 900 };
-  var STEP = 50, MAX_STAGGER = 5;
+  var DUR = { item: 760, head: 760, img: 1300, hex: 900 };
+  var STEP = 70, MAX_STAGGER = 5;
 
   var io = null, ioAlive = false, queue = [], flushPending = false;
 
