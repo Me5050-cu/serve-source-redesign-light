@@ -63,7 +63,7 @@ function collapsible(el) {
   btn.addEventListener('click', () => {
     const open = el.classList.toggle('collapsed') === false;
     btn.textContent = open ? 'Show Less' : 'Show More';
-    if (!open) (el.closest('.panel') || el.closest('section')).scrollIntoView({ behavior: 'smooth' });
+    if (!open) el.closest('.panel').scrollIntoView({ behavior: 'smooth' });
   });
   el.after(btn);
 }
@@ -103,21 +103,8 @@ function renderHeaderBand(d, types, photos, prayers, press) {
     const n = Number(li.dataset.step);
     li.classList.toggle('done', n < step);
     li.classList.toggle('current', n === step);
-    if (n === step) { li.setAttribute('aria-current', 'step'); li.querySelector('small').textContent = 'Current phase'; }
+    if (n === step) { li.setAttribute('aria-current', 'step'); li.insertAdjacentHTML('afterbegin', '<em>Current phase</em>'); }
   });
-  // The rail fills from Monitoring to the current phase once the band scrolls into view.
-  const track = $('#phase-track');
-  // Measure where the current dot sits on the rail, so the fill stops exactly there (both layouts).
-  const sizeFill = () => {
-    const rail = track.querySelector('.ph-rail').getBoundingClientRect();
-    const dot = track.querySelector(`li[data-step="${step}"] .ph-dot`).getBoundingClientRect();
-    const vertical = rail.height > rail.width;
-    const frac = vertical ? (dot.top + dot.height / 2 - rail.top) / rail.height : (dot.left + dot.width / 2 - rail.left) / rail.width;
-    track.style.setProperty('--ph-frac', Math.max(0, Math.min(1, frac)).toFixed(4));
-  };
-  sizeFill(); addEventListener('resize', sizeFill);
-  if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) track.classList.add('is-in');
-  else new IntersectionObserver((es, io) => { if (es.some((e) => e.isIntersecting)) { track.classList.add('is-in'); io.disconnect(); } }, { threshold: .35 }).observe(track);
 
   const BTN_ICON = { map_pin: 'pin', building: 'building', share: 'share', map: 'map' };
   const BTN_CLASS = { white: 'btn-outline', orange: 'btn-primary', navy: 'btn-dark' };

@@ -20,7 +20,7 @@ function visible() {
 function netCard(n) {
   const link = netLink(n);
   return `<li><a class="net-card" href="${esc(link.href || '#')}" target="_blank" rel="noopener">
-    <div class="net-logo">${n.logo_url ? `<img crossorigin="anonymous" src="${esc(n.logo_url)}" alt="${esc(n.name)} logo" loading="lazy">` : `<span>${esc(n.name[0])}</span>`}</div>
+    <div class="net-logo">${n.logo_url ? `<img src="${esc(n.logo_url)}" alt="${esc(n.name)} logo" loading="lazy">` : `<span>${esc(n.name[0])}</span>`}</div>
     <div class="net-body">
       <div class="net-title"><h3>${esc(n.name.trim())}</h3><span class="pill">${esc(n.type_name === 'network' || !n.type_name ? 'Network' : n.type_name)}</span></div>
       ${n.place ? `<span class="net-place">${icon('pin')}${esc(n.place)}</span>` : ''}

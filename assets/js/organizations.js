@@ -20,7 +20,7 @@ function visible() {
 function orgCard(o) {
   return `<li><a class="org-card" href="${APP}/OrganizationDetail?id=${o.id}" target="_blank" rel="noopener">
     <div class="org-top">
-      ${o.logo ? `<img class="org-logo" crossorigin="anonymous" src="${esc(o.logo)}" alt="" loading="lazy">` : `<span class="org-logo ph">${icon('building')}</span>`}
+      ${o.logo ? `<img class="org-logo" src="${esc(o.logo)}" alt="" loading="lazy">` : `<span class="org-logo ph">${icon('building')}</span>`}
       <div class="org-name"><h3>${esc(o.name)}</h3><span>${esc(ORG_TYPE_LABEL[o.org_type] || 'Organization')}</span></div>
     </div>
     ${TIER_LABEL[o.verified_tier] ? `<span class="pill ${o.verified_tier === 'verified_faith_based_partner' ? 'recovery' : 'green'}">${icon('shieldCheck')}${TIER_LABEL[o.verified_tier]}</span>` : ''}
