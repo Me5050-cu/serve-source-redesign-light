@@ -1,0 +1,221 @@
+/* Serve Source lettering kits: four complete type systems for the light build, switched with ?kit=<id>.
+   Nothing is stored: the kit lives in the URL only (theme.js carries it onto internal links).
+
+     field       1  Field Manual  Barlow Semi Condensed + Barlow. The brand print face, refined: bolder, tighter
+                                  headlines, a light accent word, condensed caps labels. (DEFAULT)
+     chronicle   2  Chronicle     Newsreader + Instrument Sans. Editorial serif headlines with italic accent
+                                  words over a clean grotesk; reads like a trusted report.
+     groundwork  3  Groundwork    Bricolage Grotesque + Hanken Grotesk. A confident, characterful modern grotesk;
+                                  tight, warm and contemporary.
+     commons     4  Commons       Libre Franklin + Source Sans 3. American civic gothic headlines over a humanist
+                                  text face; plain-spoken, sturdy and very readable.
+
+   theme.js sets html[data-kit] (also accepts ?kit=1..4) and injects the active kit's Google Fonts <link> only.
+   Load order: last, after themes/cinema*.css and motion.css, so the tokens here win over cinema.css's :root block
+   (html[data-kit] is more specific than :root) and the role rules below win over the cinema rules.
+
+   Each kit sets:
+     Faces     --cx-display --cx-text --cx-label (cinema.css reads these everywhere)
+     Sizes     --fs-hero --fs-h1 --fs-display --fs-title --fs-h2 --fs-h3l --fs-h3 --fs-h4 --fs-lede --fs-body
+               --fs-small --fs-meta --fs-ui --fs-label --fs-stat-xl --fs-stat-l
+               fluid: phone value at <=400px, desktop value at >=1440px, linear between
+     Role      --k-* weights, tracking and leading for hero / page H1 / display / H2 / small display heads /
+               card titles (H3) / accent <em> / eyebrow / labels / buttons and links / stat numbers / body
+   ========================================================================================================== */
+
+/* ---------- 1. Field Manual (default): Barlow Semi Condensed + Barlow ---------- */
+html[data-kit="field"] {
+  --cx-display: "Barlow Semi Condensed", "Barlow", "Arial Narrow", Arial, sans-serif;
+  --cx-text: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  --cx-label: "Barlow Condensed", "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
+  /*                 phone  desktop */
+  --fs-hero: clamp(46px, calc(31.38px + 3.654vw), 84px);      /* 46 / 84 */
+  --fs-h1: clamp(40px, calc(26.15px + 3.462vw), 76px);        /* 40 / 76 */
+  --fs-display: clamp(36px, calc(25.23px + 2.692vw), 64px);   /* 36 / 64 */
+  --fs-title: clamp(30px, calc(22.31px + 1.923vw), 50px);     /* 30 / 50 */
+  --fs-h2: clamp(26px, calc(22.15px + 0.962vw), 36px);        /* 26 / 36 */
+  --fs-h3l: clamp(22px, calc(20.08px + 0.481vw), 27px);       /* 22 / 27 */
+  --fs-h3: clamp(19px, calc(18.23px + 0.192vw), 21px);        /* 19 / 21 */
+  --fs-h4: 17px;
+  --fs-lede: clamp(18px, calc(16.85px + 0.288vw), 21px);      /* 18 / 21 */
+  --fs-body: 17px;
+  --fs-small: 15px;
+  --fs-meta: 14px;
+  --fs-ui: 15px;
+  --fs-label: 13px;
+  --fs-stat-xl: clamp(50px, calc(38.46px + 2.885vw), 80px);   /* 50 / 80 */
+  --fs-stat-l: clamp(36px, calc(29.85px + 1.538vw), 52px);    /* 36 / 52 */
+
+  --k-w-hero: 700;  --k-ls-hero: -.015em; --k-lh-hero: .96;
+  --k-w-h1: 700;    --k-ls-h1: -.012em;   --k-lh-h1: 1;
+  --k-w-display: 700; --k-ls-display: -.01em; --k-lh-display: 1.02;
+  --k-w-h2: 700;    --k-ls-h2: -.006em;   --k-lh-h2: 1.08;
+  --k-font-head-sm: var(--cx-display); --k-w-head-sm: 700; --k-ls-head-sm: 0;
+  --k-font-h3: var(--cx-display); --k-w-h3: 600; --k-ls-h3: .005em; --k-lh-h3: 1.2;
+  --k-w-em: 300; --k-em-style: normal; --k-em-color: #475569;
+  --k-eb-font: var(--cx-label); --k-eb-size: 15px; --k-eb-w: 600; --k-eb-ls: .14em; --k-eb-tt: uppercase; --k-eb-rule: 28px; --k-eb-gap: 12px;
+  --k-lb-font: var(--cx-label); --k-lb-w: 600; --k-lb-ls: .1em; --k-lb-tt: uppercase;
+  --k-btn-font: var(--cx-display); --k-btn-size: 17px; --k-btn-size-sm: 15px; --k-btn-w: 600; --k-btn-ls: .015em; --k-btn-tt: none;
+  --k-st-font: var(--cx-display); --k-st-w: 600; --k-st-ls: -.02em;
+  --k-lh-body: 1.6; --k-lh-lede: 1.5; --k-ls-body: .005em;
+}
+
+/* ---------- 2. Chronicle: Newsreader + Instrument Sans ---------- */
+html[data-kit="chronicle"] {
+  --cx-display: "Newsreader", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --cx-text: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --cx-label: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --fs-hero: clamp(42px, calc(29.69px + 3.077vw), 74px);      /* 42 / 74 */
+  --fs-h1: clamp(38px, calc(25.69px + 3.077vw), 70px);        /* 38 / 70 */
+  --fs-display: clamp(34px, calc(24.00px + 2.500vw), 60px);   /* 34 / 60 */
+  --fs-title: clamp(29px, calc(22.46px + 1.635vw), 46px);     /* 29 / 46 */
+  --fs-h2: clamp(25px, calc(21.54px + 0.865vw), 34px);        /* 25 / 34 */
+  --fs-h3l: clamp(21px, calc(19.46px + 0.385vw), 25px);       /* 21 / 25 */
+  --fs-h3: clamp(18px, calc(17.62px + 0.096vw), 19px);        /* 18 / 19 */
+  --fs-h4: 16px;
+  --fs-lede: clamp(17px, calc(16.23px + 0.192vw), 19px);      /* 17 / 19 */
+  --fs-body: 16px;
+  --fs-small: 15px;
+  --fs-meta: 13.5px;
+  --fs-ui: 15px;
+  --fs-label: 12px;
+  --fs-stat-xl: clamp(48px, calc(37.23px + 2.692vw), 76px);   /* 48 / 76 */
+  --fs-stat-l: clamp(36px, calc(30.62px + 1.346vw), 50px);    /* 36 / 50 */
+
+  --k-w-hero: 500;  --k-ls-hero: -.022em; --k-lh-hero: 1.02;
+  --k-w-h1: 500;    --k-ls-h1: -.02em;    --k-lh-h1: 1.04;
+  --k-w-display: 500; --k-ls-display: -.018em; --k-lh-display: 1.06;
+  --k-w-h2: 500;    --k-ls-h2: -.012em;   --k-lh-h2: 1.12;
+  --k-font-head-sm: var(--cx-display); --k-w-head-sm: 500; --k-ls-head-sm: -.005em;
+  --k-font-h3: var(--cx-text); --k-w-h3: 600; --k-ls-h3: -.01em; --k-lh-h3: 1.3;
+  --k-w-em: 400; --k-em-style: italic; --k-em-color: #b84c00;
+  --k-eb-font: var(--cx-label); --k-eb-size: 12.5px; --k-eb-w: 600; --k-eb-ls: .16em; --k-eb-tt: uppercase; --k-eb-rule: 0px; --k-eb-gap: 0px;
+  --k-lb-font: var(--cx-label); --k-lb-w: 600; --k-lb-ls: .12em; --k-lb-tt: uppercase;
+  --k-btn-font: var(--cx-text); --k-btn-size: 15px; --k-btn-size-sm: 14px; --k-btn-w: 600; --k-btn-ls: 0; --k-btn-tt: none;
+  --k-st-font: var(--cx-display); --k-st-w: 400; --k-st-ls: -.03em;
+  --k-lh-body: 1.62; --k-lh-lede: 1.55; --k-ls-body: 0;
+}
+
+/* ---------- 3. Groundwork: Bricolage Grotesque + Hanken Grotesk ---------- */
+html[data-kit="groundwork"] {
+  --cx-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --cx-text: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --cx-label: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --fs-hero: clamp(40px, calc(26.92px + 3.269vw), 74px);      /* 40 / 74 */
+  --fs-h1: clamp(36px, calc(25.23px + 2.692vw), 64px);        /* 36 / 64 */
+  --fs-display: clamp(32px, calc(22.77px + 2.308vw), 56px);   /* 32 / 56 */
+  --fs-title: clamp(28px, calc(21.85px + 1.538vw), 44px);     /* 28 / 44 */
+  --fs-h2: clamp(24px, calc(20.92px + 0.769vw), 32px);        /* 24 / 32 */
+  --fs-h3l: clamp(20px, calc(18.46px + 0.385vw), 24px);       /* 20 / 24 */
+  --fs-h3: clamp(18px, calc(17.23px + 0.192vw), 20px);        /* 18 / 20 */
+  --fs-h4: 16.5px;
+  --fs-lede: clamp(17px, calc(16.23px + 0.192vw), 19px);      /* 17 / 19 */
+  --fs-body: 16.5px;
+  --fs-small: 15px;
+  --fs-meta: 14px;
+  --fs-ui: 15px;
+  --fs-label: 12px;
+  --fs-stat-xl: clamp(46px, calc(35.23px + 2.692vw), 74px);   /* 46 / 74 */
+  --fs-stat-l: clamp(34px, calc(28.62px + 1.346vw), 48px);    /* 34 / 48 */
+
+  --k-w-hero: 700;  --k-ls-hero: -.04em;  --k-lh-hero: .98;
+  --k-w-h1: 700;    --k-ls-h1: -.035em;   --k-lh-h1: 1;
+  --k-w-display: 700; --k-ls-display: -.032em; --k-lh-display: 1.03;
+  --k-w-h2: 700;    --k-ls-h2: -.025em;   --k-lh-h2: 1.1;
+  --k-font-head-sm: var(--cx-display); --k-w-head-sm: 650; --k-ls-head-sm: -.02em;
+  --k-font-h3: var(--cx-display); --k-w-h3: 600; --k-ls-h3: -.015em; --k-lh-h3: 1.22;
+  --k-w-em: 300; --k-em-style: normal; --k-em-color: #475569;
+  --k-eb-font: var(--cx-text); --k-eb-size: 13px; --k-eb-w: 700; --k-eb-ls: .1em; --k-eb-tt: uppercase; --k-eb-rule: 8px; --k-eb-gap: 10px;
+  --k-lb-font: var(--cx-label); --k-lb-w: 700; --k-lb-ls: .09em; --k-lb-tt: uppercase;
+  --k-btn-font: var(--cx-text); --k-btn-size: 15.5px; --k-btn-size-sm: 14px; --k-btn-w: 700; --k-btn-ls: -.005em; --k-btn-tt: none;
+  --k-st-font: var(--cx-display); --k-st-w: 700; --k-st-ls: -.045em;
+  --k-lh-body: 1.6; --k-lh-lede: 1.55; --k-ls-body: 0;
+}
+
+/* ---------- 4. Commons: Libre Franklin + Source Sans 3 ---------- */
+html[data-kit="commons"] {
+  --cx-display: "Libre Franklin", "Franklin Gothic Medium", "Helvetica Neue", Arial, sans-serif;
+  --cx-text: "Source Sans 3", "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+  --cx-label: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+  --fs-hero: clamp(40px, calc(27.69px + 3.077vw), 72px);      /* 40 / 72 */
+  --fs-h1: clamp(36px, calc(25.23px + 2.692vw), 64px);        /* 36 / 64 */
+  --fs-display: clamp(32px, calc(23.54px + 2.115vw), 54px);   /* 32 / 54 */
+  --fs-title: clamp(28px, calc(22.62px + 1.346vw), 42px);     /* 28 / 42 */
+  --fs-h2: clamp(24px, calc(20.92px + 0.769vw), 32px);        /* 24 / 32 */
+  --fs-h3l: clamp(20px, calc(18.46px + 0.385vw), 24px);       /* 20 / 24 */
+  --fs-h3: clamp(18px, calc(17.23px + 0.192vw), 20px);        /* 18 / 20 */
+  --fs-h4: 17px;
+  --fs-lede: clamp(19px, calc(18.23px + 0.192vw), 21px);      /* 19 / 21 */
+  --fs-body: 17.5px;
+  --fs-small: 16px;
+  --fs-meta: 14.5px;
+  --fs-ui: 15.5px;
+  --fs-label: 12px;
+  --fs-stat-xl: clamp(46px, calc(36.00px + 2.500vw), 72px);   /* 46 / 72 */
+  --fs-stat-l: clamp(34px, calc(28.62px + 1.346vw), 48px);    /* 34 / 48 */
+
+  --k-w-hero: 800;  --k-ls-hero: -.032em; --k-lh-hero: 1.02;
+  --k-w-h1: 800;    --k-ls-h1: -.03em;    --k-lh-h1: 1.04;
+  --k-w-display: 800; --k-ls-display: -.028em; --k-lh-display: 1.06;
+  --k-w-h2: 700;    --k-ls-h2: -.02em;    --k-lh-h2: 1.14;
+  --k-font-head-sm: var(--cx-display); --k-w-head-sm: 700; --k-ls-head-sm: -.015em;
+  --k-font-h3: var(--cx-display); --k-w-h3: 700; --k-ls-h3: -.015em; --k-lh-h3: 1.25;
+  --k-w-em: 300; --k-em-style: normal; --k-em-color: #475569;
+  --k-eb-font: var(--cx-label); --k-eb-size: 12.5px; --k-eb-w: 700; --k-eb-ls: .15em; --k-eb-tt: uppercase; --k-eb-rule: 20px; --k-eb-gap: 10px;
+  --k-lb-font: var(--cx-label); --k-lb-w: 600; --k-lb-ls: .1em; --k-lb-tt: uppercase;
+  --k-btn-font: var(--cx-display); --k-btn-size: 15px; --k-btn-size-sm: 14px; --k-btn-w: 600; --k-btn-ls: -.005em; --k-btn-tt: none;
+  --k-st-font: var(--cx-display); --k-st-w: 300; --k-st-ls: -.04em;
+  --k-lh-body: 1.55; --k-lh-lede: 1.5; --k-ls-body: 0;
+}
+
+/* =====================================================================
+   Role rules: one set, every kit fills it through the tokens above.
+   Only family / weight / tracking / leading / case are set here; sizes stay on cinema.css's --fs-* tokens.
+   ===================================================================== */
+html[data-kit] body { font-family: var(--cx-text); line-height: var(--k-lh-body); letter-spacing: var(--k-ls-body); }
+html[data-kit] :is(.lede, .hero-lede, .net-hero-copy > p) { line-height: var(--k-lh-lede); }
+
+/* Headlines */
+/* Photo-split heroes (home hero, the Long-Term Recovery band): the headline stays in the copy column, clear of the photo. */
+html[data-kit] .band :is(h1, h2).display { max-width: min(600px, 100%); }
+html[data-kit] :is(h1, h2) { font-family: var(--cx-display); }
+html[data-kit] .hero h1 { max-width: min(740px, 100%); font-family: var(--cx-display); font-weight: var(--k-w-hero); letter-spacing: var(--k-ls-hero); line-height: var(--k-lh-hero); }
+html[data-kit] :is(.page-hero h1, .dz-title h1) { font-family: var(--cx-display); font-weight: var(--k-w-h1); letter-spacing: var(--k-ls-h1); line-height: var(--k-lh-h1); }
+html[data-kit] :is(.display, .title, .net-hero h1, .band h1.display, .impact-body h3) { font-family: var(--cx-display); font-weight: var(--k-w-display); letter-spacing: var(--k-ls-display); line-height: var(--k-lh-display); }
+html[data-kit] :is(.intents h2, .block-head h2, .panel-head h2, .prose h2, .list-head h2, .section-head h2:not(.display):not(.title)) { font-family: var(--cx-display); font-weight: var(--k-w-h2); letter-spacing: var(--k-ls-h2); line-height: var(--k-lh-h2); }
+html[data-kit] :is(.resp h3, .net-title h3, .net-more h3, .side-card h3, .subnav-title, .prose summary, .mobile-menu summary, .filter-panel .panel-head h2, .resp-logo.ph, .net-logo span) { font-family: var(--k-font-head-sm); font-weight: var(--k-w-head-sm); letter-spacing: var(--k-ls-head-sm); }
+html[data-kit] .brand { font-family: var(--cx-display); font-weight: var(--k-w-head-sm); }
+
+/* Home hero link row: wider kits keep the two text links in the copy column, clear of the photo */
+html[data-kit]:not([data-kit="field"]) .hero .hero-ctas { column-gap: 24px; }
+html[data-kit]:not([data-kit="field"]) .hero .hero-ctas .link-more { font-size: var(--k-btn-size-sm); }
+
+/* Card titles */
+html[data-kit] :is(.intent b, .feature-body h3, .d-body h3, .live-card h3, .mon-card h3, .pillars h4, .why-grid h3, .net-hero-tiles h3, .org-name h3, .video-grid figcaption, .prose h3, .prose h4, .site-footer h4, .proj-card h3, .card h3) { font-family: var(--k-font-h3); font-weight: var(--k-w-h3); letter-spacing: var(--k-ls-h3); line-height: var(--k-lh-h3); }
+
+/* Accent words inside headlines */
+html[data-kit] :is(h1, h2, h3, h4) em { font-weight: var(--k-w-em); font-style: var(--k-em-style); color: var(--k-em-color); }
+html[data-kit] :is(.cta, .band.dark) :is(h1, h2, h3) em { color: inherit; }
+
+/* Eyebrow / kicker */
+html[data-kit] :is(.eyebrow, .hero .eyebrow, .net-hero .eyebrow) { font-family: var(--k-eb-font); font-size: var(--k-eb-size); font-weight: var(--k-eb-w); letter-spacing: var(--k-eb-ls); text-transform: var(--k-eb-tt); line-height: 1.3; }
+html[data-kit] :is(.eyebrow, .hero .eyebrow, .net-hero .eyebrow)::before { content: ""; display: inline-block; width: var(--k-eb-rule); height: 2px; margin-right: var(--k-eb-gap); vertical-align: .3em; background: currentColor; }
+html[data-kit="groundwork"] :is(.eyebrow, .hero .eyebrow, .net-hero .eyebrow)::before { height: 8px; border-radius: 50%; vertical-align: .12em; }
+
+/* Labels: stat captions, filter legends, pills, phase tags */
+html[data-kit] :is(.hero-stats dt, .count-chip, .stat-row dt, .mini-stats dt, legend, .net-filters label > span:first-child, .cmdk-group, .pill, .phases li em, .mock-ribbon .mr-label b) { font-family: var(--k-lb-font); font-weight: var(--k-lb-w); letter-spacing: var(--k-lb-ls); text-transform: var(--k-lb-tt); }
+
+/* Buttons and text links */
+html[data-kit] .btn { font-family: var(--k-btn-font); font-size: var(--k-btn-size); font-weight: var(--k-btn-w); letter-spacing: var(--k-btn-ls); text-transform: var(--k-btn-tt); }
+html[data-kit] :is(.btn-sm, .site-header .header-actions .btn, .subnav .btn, .resp-actions .btn) { font-size: var(--k-btn-size-sm); }
+html[data-kit] :is(.link-more, .intent .go, .d-foot .go, .org-go, .net-go, .read-more) { font-family: var(--k-btn-font); font-weight: var(--k-btn-w); letter-spacing: var(--k-btn-ls); }
+
+/* Impact numbers */
+html[data-kit] :is(.hero-stats dd, .count-chip b, .stat-row dd, .mini-stats dd) { font-family: var(--k-st-font); font-weight: var(--k-st-w); letter-spacing: var(--k-st-ls); font-variant-numeric: lining-nums tabular-nums; }
+html[data-kit] .num-plus { font-weight: inherit; }
+
+/* Phones: keep long single words from overflowing at the phone headline sizes */
+@media (max-width: 640px) {
+  html[data-kit] :is(h1, h2, .display, .title) { overflow-wrap: break-word; hyphens: manual; }
+  html[data-kit] .btn-sm { font-size: var(--k-btn-size-sm); }
+}

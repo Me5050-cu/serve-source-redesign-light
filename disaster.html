@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="assets/css/site.css">
 <link rel="stylesheet" href="assets/css/directory.css">
 <link rel="stylesheet" href="assets/css/disaster.css">
+<link rel="stylesheet" href="assets/css/overview.css">
 <script src="assets/js/theme.js"></script>
 </head>
 <body>
@@ -41,24 +42,36 @@
     </div>
   </section>
 
+  <!-- Overview: full-width band with the phase track and the story -->
+  <section class="dz-overview" id="about-panel" aria-labelledby="about-title">
+    <div class="wrap">
+      <div class="ov-head">
+        <p class="ov-eyebrow">Overview</p>
+        <h2 id="about-title">About This Disaster</h2>
+      </div>
+
+      <!-- Phases -->
+      <div class="ph-track" id="phase-track">
+        <div class="ph-rail" aria-hidden="true"><span class="ph-fill"></span></div>
+        <ol class="ph-steps" id="phases" aria-label="Disaster phase">
+          <li data-step="0"><i class="ph-dot" aria-hidden="true"></i><small>Phase 1</small><b>Monitoring</b><span>Tracking conditions and early reports</span></li>
+          <li data-step="1"><i class="ph-dot" aria-hidden="true"></i><small>Phase 2</small><b>Assessment</b><span>Evaluating needs and damage</span></li>
+          <li data-step="2"><i class="ph-dot" aria-hidden="true"></i><small>Phase 3</small><b>Response</b><span>Providing immediate relief and assistance</span></li>
+          <li data-step="3"><i class="ph-dot" aria-hidden="true"></i><small>Phase 4</small><b>Long-Term Recovery</b><span>Rebuilding and ongoing support</span></li>
+        </ol>
+      </div>
+
+      <div class="ov-body">
+        <div class="ov-story">
+          <div class="prose collapsible" id="about"></div>
+        </div>
+        <!-- Action buttons -->
+        <div class="dz-actions" id="actions"></div>
+      </div>
+    </div>
+  </section>
+
   <div class="wrap dz-body">
-    <!-- Phases -->
-    <ol class="phases" id="phases" aria-label="Disaster phase">
-      <li data-step="0"><b>Monitoring</b><span>Tracking conditions and early reports</span></li>
-      <li data-step="1"><b>Assessment</b><span>Evaluating needs and damage</span></li>
-      <li data-step="2"><b>Response</b><span>Providing immediate relief and assistance</span></li>
-      <li data-step="3"><b>Long-Term Recovery</b><span>Rebuilding and ongoing support</span></li>
-    </ol>
-
-    <!-- Action buttons -->
-    <div class="dz-actions" id="actions"></div>
-
-    <!-- About -->
-    <section class="panel" id="about-panel">
-      <div class="panel-head"><span class="icon-chip soft" data-icon="info"></span><h2>About This Disaster</h2></div>
-      <div class="prose collapsible" id="about"></div>
-    </section>
-
     <!-- Local resources -->
     <section class="panel" id="resources-panel" hidden>
       <div class="panel-head"><span class="icon-chip soft" data-icon="life"></span><h2>Local Resources</h2></div>

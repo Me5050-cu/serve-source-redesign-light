@@ -24,11 +24,24 @@
       ['system', 'System', "System font: the guide's website rule (default)"],
       ['barlow', 'Barlow', 'Barlow Semi Condensed + Barlow: the print headline face'],
     ],
+    // Lettering kits (assets/css/kits.css), chosen with ?kit=<id> or ?kit=1..4; nothing is stored.
+    kits: [
+      ['field', 'Field Manual', 'Barlow Semi Condensed + Barlow: the brand print face, refined (default)',
+        'family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Semi+Condensed:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600'],
+      ['chronicle', 'Chronicle', 'Newsreader + Instrument Sans: editorial serif headlines, italic accents, clean grotesk text',
+        'family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=Instrument+Sans:wght@400..700'],
+      ['groundwork', 'Groundwork', 'Bricolage Grotesque + Hanken Grotesk: a confident, characterful modern grotesk',
+        'family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Hanken+Grotesk:wght@400..700'],
+      ['commons', 'Commons', 'Libre Franklin + Source Sans 3: American civic gothic over a humanist text face',
+        'family=Libre+Franklin:wght@300..800&family=Source+Sans+3:ital,wght@0,400..700;1,400'],
+    ],
     barlowHref: 'https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Semi+Condensed:wght@400;500;600;700;800&display=swap',
   };
   var ids = function (list) { return list.map(function (x) { return x[0]; }); };
   REG.ids = { theme: ids(REG.themes), colorway: ids(REG.colorways), type: ids(REG.types) };
   REG.defaults = { theme: 'cinema', colorway: 'platform', type: 'system' };
+  REG.ids.kit = ids(REG.kits);
+  REG.defaults.kit = 'field';
   window.SS_PREVIEW = REG;
   var me = document.currentScript;
   if (me && me.hasAttribute('data-registry')) return;
@@ -49,14 +62,55 @@
   root.setAttribute('data-media', 'field');
   root.setAttribute('data-colorway', cw);
   root.setAttribute('data-type', ty);
+  // Lettering kit: from the URL only (?kit=field|chronicle|groundwork|commons or 1-4), default field.
+  var kq = (q.get('kit') || '').toLowerCase(), ki = REG.ids.kit.indexOf(kq);
+  if (ki < 0 && /^[1-9]$/.test(kq)) ki = +kq - 1;
+  if (ki < 0 || ki >= REG.kits.length) ki = 0;
+  var kit = REG.kits[ki];
+  REG.kit = kit[0];
+  root.setAttribute('data-kit', kit[0]);
+  root.classList.add('pro');
 
   var font = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
     '<link rel="stylesheet" id="ss-barlow" href="' + REG.barlowHref + '">';
-  document.write((ty === 'barlow' ? font : '') +
+  var kitFont = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
+    '<link rel="stylesheet" id="ss-kit-font" href="https://fonts.googleapis.com/css2?' + kit[3] + '&display=swap">';
+  document.write(kitFont + (ty === 'barlow' ? font : '') +
     '<link rel="stylesheet" href="assets/css/lettering.css"><link rel="stylesheet" href="assets/css/colorways.css">' +
     '<link rel="stylesheet" href="assets/css/themes/' + t + '.css"><link rel="stylesheet" href="assets/css/themes/cinema-ui.css"><link rel="stylesheet" href="assets/css/themes/cinema-white.css"><script src="assets/js/themes/' + t + '.js"><\/script>' +
     '<script src="assets/js/media.js"><\/script>' +
-    '<link rel="stylesheet" href="assets/css/motion.css"><script src="assets/js/motion.js"><\/script>');
+    '<link rel="stylesheet" href="assets/css/motion.css"><script src="assets/js/motion.js"><\/script>' +
+    '<link rel="stylesheet" href="assets/css/kits.css">' +
+    // pro.css: the professional layout pass (grid, hairlines, photo-backed cards). Last, so it wins; kit tokens only for type.
+    '<link rel="stylesheet" href="assets/css/pro.css">');
+
+  // Carry a non-default kit onto internal page links so a preview stays in one kit while clicking around.
+  if (ki > 0) document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a || a.target === '_blank') return;
+    try {
+      var u = new URL(a.getAttribute('href'), location.href);
+      if (u.origin !== location.origin || !/\.html$/.test(u.pathname) || u.searchParams.has('kit')) return;
+      u.searchParams.set('kit', REG.kit); a.href = u.href;
+    } catch (err) {}
+  }, true);
+
+  // Preview-only kit switcher: shown when the URL carries ?kit= or ?preview, never on a plain link (or in a compare frame).
+  if (!frame && (q.has('kit') || q.has('preview'))) {
+    var mountKits = function () {
+      if (document.getElementById('kit-switch')) return;
+      var nav = document.createElement('nav');
+      nav.id = 'kit-switch'; nav.className = 'kit-switch'; nav.setAttribute('aria-label', 'Lettering kit preview');
+      var html = '<span class="ks-label">Lettering</span>';
+      REG.kits.forEach(function (k, i) {
+        var u = new URL(location.href); u.searchParams.set('kit', k[0]);
+        html += '<a href="' + u.pathname + u.search + u.hash + '" title="' + k[2].replace(/"/g, '&quot;') + '"' + (i === ki ? ' aria-current="true"' : '') + '><b>' + (i + 1) + '</b><span>' + k[1] + '</span></a>';
+      });
+      nav.innerHTML = html;
+      document.body.appendChild(nav);
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountKits); else mountKits();
+  }
 
   // Colorways are pure CSS, so the ribbon switches them in place; the URL and the remembered choice follow.
   REG.setColorway = function (id) {

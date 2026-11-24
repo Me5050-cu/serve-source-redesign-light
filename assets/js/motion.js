@@ -25,16 +25,17 @@
     // bands below the fold (the hero, page heroes and the Rebuild header band are never hidden)
     'section.band:not(:has(h1)) > .band-inner', '.cta > .band-inner > *',
     // home
-    '.intent', '.feature', '.impact', '.checks li', '.pillars > div', '.layer-body > .lede', '.storm-body > :not(h2)',
+    '.feature-body', '.impact-body', '.checks li', '.pillars > div', '.layer-body > .lede', '.storm-body > :not(h2)',
     // cards, rows and registers rendered from data
-    '.d-card:not(.skeleton)', '.live-card', '.mon-card', '.why-grid > div', '.org-card', '.net-card', '.resp', '.net-more',
+    '.live-card header', '.mon-card', '.why-grid > div', '.org-card', '.net-card', '.resp', '.net-more',
     '.stat-row > div', '.side-card', '.dz-body > .panel > :not(.panel-head)', '.split > .side > *',
     // colophon
     '.footer-note', '.footer-grid > *', '.footer-bottom'
   ];
   // Only tagged when they start below the fold on the first scan (part of a page hero on wide screens).
   var FOLD = ['.net-hero-tiles > div'];
-  var IMGS = ['.feature-media > img', '.impact-media > img', '.layer-media > img', '.mosaic > img', '.d-card:not(.skeleton) .d-media > img:not(.type-icon)'];
+  // Photos never hide: they are on screen from the first paint (no reveal, no clip).
+  var IMGS = [];
   var HEX = [];
   var SKIP = '.brand-backdrop, .site-header, .utility-bar, .mobile-menu, .cmdk, .tabbar, .subnav, .mock-ribbon, .leaflet-container, [hidden]';
 

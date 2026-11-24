@@ -52,7 +52,7 @@ function responseCard(r, { planned = 'Scheduled' } = {}) {
     .map(([k, v]) => `<a class="social" href="${esc(v)}" target="_blank" rel="noopener" aria-label="${esc(k)}">${icon(SOCIAL_ICON[k])}</a>`);
   return `<li class="resp" data-id="${esc(r.id)}">
     <div class="resp-top">
-      ${o.logo ? `<img class="resp-logo" src="${esc(o.logo)}" alt="" loading="lazy">` : `<span class="resp-logo ph">${esc((o.name || '?')[0])}</span>`}
+      ${o.logo ? `<img class="resp-logo" crossorigin="anonymous" src="${esc(o.logo)}" alt="" loading="lazy">` : `<span class="resp-logo ph">${esc((o.name || '?')[0])}</span>`}
       <div class="resp-head">
         <span class="pill ${st.cls}"><span class="dot"></span>${st.label}</span>
         <h3>${(() => { const n = esc(o.name), i = n.lastIndexOf(' '), v = TIER_LABEL[o.tier] ? `<span class="verified" title="${TIER_LABEL[o.tier]}" style="margin-left:5px;vertical-align:-0.12em">${icon('shieldCheck')}</span>` : ''; return v ? `<span>${n.slice(0, i + 1)}<span style="white-space:nowrap">${n.slice(i + 1)}${v}</span></span>` : n; })()}</h3>

@@ -1,0 +1,115 @@
+/* Disaster page: full-width overview band (About This Disaster + phase track).
+   Loaded right after disaster.css; class names are new so the theme files don't reach them. */
+
+.dz-overview {
+  --ov-gap: clamp(20px, 3vw, 48px);
+  --ov-orange: var(--cx-orange-ui, #b84c00);
+  position: relative;
+  min-height: min(100svh, 1080px);
+  padding: clamp(72px, 9vw, 136px) 0 clamp(72px, 8vw, 120px);
+  background: var(--cx-bg, #fff);
+  border-bottom: 1px solid var(--cx-line, rgba(15, 23, 42, .09));
+}
+.dz-overview > .wrap { display: flex; flex-direction: column; gap: clamp(48px, 6vw, 88px); }
+
+/* Heading */
+.ov-head { display: grid; gap: 14px; }
+.ov-eyebrow { margin: 0; font: 600 12px/1 var(--cx-label, inherit); letter-spacing: .14em; text-transform: uppercase; color: var(--ov-orange); }
+.ov-head h2 { margin: 0; font: 600 clamp(40px, 6vw, 84px)/1.02 var(--cx-display, inherit); letter-spacing: -.02em; color: var(--cx-head, #0f172a); max-width: 14ch; }
+
+/* Phase track */
+.ph-track { position: relative; --ph-step: 0; }
+.ph-rail { position: absolute; left: 9px; right: 0; top: 9px; height: 2px; background: var(--cx-line-2, rgba(15, 23, 42, .16)); overflow: hidden; }
+.ph-fill {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  background: var(--ov-orange);
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform 1.5s cubic-bezier(.65, 0, .25, 1) .2s;
+}
+.ph-track.is-in .ph-fill { transform: scaleX(var(--ph-frac, 0)); }
+
+.ph-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--ov-gap); }
+.ph-steps li {
+  position: relative; display: flex; flex-direction: column; gap: 8px; padding-top: 44px;
+  opacity: 0; transform: translateY(14px);
+  transition: opacity .7s ease, transform .7s cubic-bezier(.2, .7, .2, 1);
+  transition-delay: calc(var(--i, 0) * 160ms + 150ms);
+}
+.ph-steps li:nth-child(1) { --i: 0; } .ph-steps li:nth-child(2) { --i: 1; }
+.ph-steps li:nth-child(3) { --i: 2; } .ph-steps li:nth-child(4) { --i: 3; }
+.ph-track.is-in .ph-steps li { opacity: 1; transform: none; }
+
+.ph-dot {
+  position: absolute; left: 0; top: 0; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--cx-bg, #fff); box-shadow: inset 0 0 0 2px var(--cx-line-2, rgba(15, 23, 42, .16));
+  transition: background .4s ease, box-shadow .4s ease;
+  transition-delay: calc(var(--i, 0) * 380ms + 300ms);
+}
+.ph-steps small { font: 600 12px/1 var(--cx-label, inherit); letter-spacing: .12em; text-transform: uppercase; color: var(--cx-ink-4, #8a99ad); }
+.ph-steps b { font: 600 clamp(22px, 2vw, 28px)/1.15 var(--cx-display, inherit); letter-spacing: -.01em; color: var(--cx-ink-4, #8a99ad); }
+.ph-steps span { font: 400 16px/1.5 var(--cx-text, inherit); color: var(--cx-ink-4, #8a99ad); max-width: 26ch; }
+
+/* Completed phases */
+.ph-track.is-in li.done .ph-dot { background: var(--ov-orange); box-shadow: none; }
+.ph-steps li.done small { color: var(--cx-ink-3, #5b6b80); }
+.ph-steps li.done b { color: var(--cx-ink-2, #475569); }
+.ph-steps li.done span { color: var(--cx-ink-3, #5b6b80); }
+.ph-steps li.done .ph-dot::after {
+  content: ""; position: absolute; left: 6px; top: 5px; width: 6px; height: 9px;
+  border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); opacity: 0; transition: opacity .3s ease;
+  transition-delay: inherit;
+}
+.ph-track.is-in li.done .ph-dot::after { opacity: 1; }
+
+/* Current phase */
+.ph-steps li.current small { color: var(--ov-orange); }
+.ph-steps li.current b { color: var(--cx-head, #0f172a); font-size: clamp(28px, 2.6vw, 38px); }
+.ph-steps li.current span { color: var(--cx-ink-2, #475569); }
+.ph-track.is-in li.current .ph-dot { background: var(--ov-orange); box-shadow: 0 0 0 5px var(--cx-orange-50, #fff3ea); }
+.ph-steps li.current .ph-dot::before {
+  content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid var(--ov-orange); opacity: 0;
+}
+.ph-track.is-in li.current .ph-dot::before { animation: ph-pulse 2.2s ease-out 2s infinite; }
+@keyframes ph-pulse { 0% { transform: scale(.8); opacity: .7; } 100% { transform: scale(2.1); opacity: 0; } }
+
+/* Story + actions */
+.ov-body { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--ov-gap) clamp(40px, 7vw, 120px); align-items: start; padding-top: clamp(40px, 5vw, 64px); border-top: 1px solid var(--cx-line, rgba(15, 23, 42, .09)); }
+.ov-body .prose { max-width: 66ch; font-size: clamp(17px, 1.25vw, 19px); }
+.ov-body .show-more { margin-top: 20px; }
+.dz-overview .dz-actions { position: sticky; top: 140px; display: flex; flex-direction: column; align-items: stretch; gap: 10px; margin: 0; }
+.dz-overview .dz-actions .btn { justify-content: space-between; width: 100%; }
+.dz-overview .dz-actions:empty { display: none; }
+
+/* The body below no longer overlaps the hero */
+.dz-overview + .dz-body { margin-top: 0; }
+.dz-overview + .dz-body > :is(.panel, .split):not([hidden]):first-of-type { border-top: 0; margin-top: 0; }
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .ov-body { grid-template-columns: minmax(0, 1fr); }
+  .dz-overview .dz-actions { position: static; flex-direction: row; flex-wrap: wrap; }
+  .dz-overview .dz-actions .btn { width: auto; }
+}
+
+/* Phone: the track turns vertical */
+@media (max-width: 720px) {
+  .dz-overview { min-height: 0; }
+  .ph-rail { left: 9px; right: auto; top: 10px; bottom: 10px; width: 2px; height: auto; }
+  .ph-fill { transform: scaleY(0); transform-origin: 50% 0; }
+  .ph-track.is-in .ph-fill { transform: scaleY(var(--ph-frac, 0)); }
+  .ph-steps { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .ph-steps li { padding: 0 0 0 40px; min-height: 20px; gap: 6px; }
+  .ph-steps span { max-width: none; }
+  .ph-steps li:not(.current) span { font-size: 15px; }
+  .dz-overview .dz-actions { flex-direction: column; }
+  .dz-overview .dz-actions .btn { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ph-fill, .ph-steps li, .ph-dot, .ph-dot::after { transition: none !important; }
+  .ph-track.is-in li.current .ph-dot::before { animation: none; }
+}
+.ov-story { min-width: 0; }
+.ov-story .show-more { margin-top: 20px; }
+.dz-overview .dz-actions { border: 0; padding: 0; }
+.dz-overview .dz-actions .btn { justify-content: flex-start; gap: 12px; }

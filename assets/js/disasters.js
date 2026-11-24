@@ -8,7 +8,7 @@ hydrateIcons();
 (async function stats() {
   const list = await entity('StatSummary', { fields: ['stat_key', 'value_number'] }, 'stats');
   const byKey = Object.fromEntries(list.map((s) => [s.stat_key, s.value_number]));
-  $$('[data-stat]').forEach((el) => { const n = byKey[el.dataset.stat]; if (n != null) el.textContent = n.toLocaleString(); });
+  $$('[data-stat]').forEach((el) => { const n = byKey[el.dataset.stat]; if (n != null) { el.textContent = n.toLocaleString(); el.closest('.count-chip')?.classList.toggle('is-zero', n === 0); } });
 })();
 
 /* ---------- Live Monitoring ---------- */

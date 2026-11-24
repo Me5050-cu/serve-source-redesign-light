@@ -126,7 +126,15 @@ const DISASTER_CARD_FIELDS = ['id', 'name', 'slug', 'status', 'event_type', 'aff
 async function loadPhotos() {
   let photos = {};
   try { photos = await (await fetch('assets/data/photos.json')).json(); } catch {}
-  return Object.assign(photos, window.SS_PHOTO_OVERRIDES);
+  photos = Object.assign(photos, window.SS_PHOTO_OVERRIDES);
+  // Every stand-in says so: "Representative photo · <photographer>" (complete, never truncated at the source).
+  for (const v of Object.values(photos)) {
+    if (!v || !v.representative || !v.credit || /^Representative/.test(v.credit)) continue;
+    let who = v.credit.replace(/^Photo:\s*/, '').replace(/^Photo by /, '');
+    who = who.replace(/(Unknown author)+/, 'Wikimedia Commons').replace(/State of Hawai$/, 'State of Hawaii');
+    v.credit = `Representative photo · ${who}`;
+  }
+  return photos;
 }
 async function loadTypes() {
   const list = await entity('DisasterType', { limit: 200, fields: ['id', 'name', 'background_image_url', 'icon_graphic_url'] }, 'types');
@@ -167,7 +175,7 @@ function videoFacade(url, title) {
   const id = youtubeId(url);
   if (!id) return '';
   return `<div class="video" data-yt="${id}">
-    <img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" loading="lazy">
+    <img src="https://i.ytimg.com/vi/${id}/maxresdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'">
     <button class="play" aria-label="Play ${esc(title)}"><span>${icon('play')}</span></button>
   </div>`;
 }
@@ -509,3 +517,75 @@ window.ssBrandBackdrops = brandBackdrops;
 brandBackdrops();
 addEventListener('DOMContentLoaded', () => brandBackdrops());
 addEventListener('load', () => brandBackdrops());
+
+/* ---------- Logos fill their tiles ----------
+   Each partner logo is read once it loads. Empty margins baked into the image are trimmed so the
+   mark itself fills the tile, and if the logo sits on a solid colour (a black or white logo card)
+   the tile takes that colour, so it reads edge to edge instead of as a small badge in a gray box. */
+(function fillLogos() {
+  const SEL = 'img.resp-logo, img.org-logo, .net-logo img';
+  function apply(img) {
+    if (img.dataset.filled || !img.naturalWidth) return;
+    img.dataset.filled = '1';
+    const W = img.naturalWidth, H = img.naturalHeight;
+    let edge = null, crop = null;
+    try {
+      const s = Math.min(1, 240 / Math.max(W, H)), cw = Math.max(1, Math.round(W * s)), ch = Math.max(1, Math.round(H * s));
+      const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+      const x = c.getContext('2d', { willReadFrequently: true });
+      x.drawImage(img, 0, 0, cw, ch);
+      const d = x.getImageData(0, 0, cw, ch).data, px = (i, j) => { const k = (j * cw + i) * 4; return [d[k], d[k + 1], d[k + 2], d[k + 3]]; };
+      const ring = [];
+      for (let i = 0; i < cw; i++) ring.push(px(i, 0), px(i, ch - 1));
+      for (let j = 0; j < ch; j++) ring.push(px(0, j), px(cw - 1, j));
+      const opaque = ring.filter((p) => p[3] > 240);
+      let isBg;
+      if (opaque.length > ring.length * .9) {
+        const m = [0, 1, 2].map((n) => opaque.reduce((a, p) => a + p[n], 0) / opaque.length);
+        const spread = opaque.reduce((a, p) => a + Math.abs(p[0] - m[0]) + Math.abs(p[1] - m[1]) + Math.abs(p[2] - m[2]), 0) / opaque.length;
+        if (spread < 30) { edge = `rgb(${m.map(Math.round).join(',')})`; isBg = (p) => Math.abs(p[0] - m[0]) + Math.abs(p[1] - m[1]) + Math.abs(p[2] - m[2]) < 60; }
+      } else if (ring.filter((p) => p[3] < 16).length > ring.length * .9) {
+        isBg = (p) => p[3] < 24;
+      }
+      if (isBg) {
+        let x0 = cw, y0 = ch, x1 = -1, y1 = -1;
+        for (let j = 0; j < ch; j++) for (let i = 0; i < cw; i++) if (!isBg(px(i, j))) { if (i < x0) x0 = i; if (i > x1) x1 = i; if (j < y0) y0 = j; if (j > y1) y1 = j; }
+        if (x1 > x0 && y1 > y0 && ((x1 - x0) * (y1 - y0)) < cw * ch * .8) crop = [x0 / s, y0 / s, (x1 - x0 + 1) / s, (y1 - y0 + 1) / s];
+      }
+    } catch (e) { /* unreadable image: keep the default tile */ }
+    const holder = img.closest('.net-logo');
+    if (edge) { img.style.backgroundColor = edge; if (holder) holder.style.backgroundColor = edge; }
+    else if (!holder) img.style.backgroundColor = '#fff';
+    img.style.objectFit = 'contain';
+    img.style.padding = holder ? '8%' : (edge ? '7%' : '10%');
+    if (holder) { img.style.width = '100%'; img.style.height = '100%'; }
+    else {
+      // Wide wordmarks get a wide tile (same height, up to 2.6x as wide) so the name is readable.
+      const r = crop ? crop[2] / crop[3] : W / H;
+      if (r > 1.35) {
+        const row0 = img.parentElement, room = row0 ? row0.clientWidth * .4 : 999;
+        const h = img.getBoundingClientRect().height || 56, w = Math.round(Math.max(h, Math.min(h * r * .9, h * 2.6, room)));
+        img.style.aspectRatio = 'auto'; img.style.width = w + 'px'; img.style.height = h + 'px';
+        img.style.padding = Math.round(h * .14) + 'px ' + Math.round(h * .16) + 'px';
+        const row = img.parentElement;
+        if (row && getComputedStyle(row).display === 'grid') row.style.gridTemplateColumns = `${w}px minmax(0, 1fr)`;
+      }
+    }
+    img.classList.add('logo-fill');
+    if (crop) {
+      try {
+        const [cx, cy, cw2, ch2] = crop, scale = Math.min(1, 600 / Math.max(cw2, ch2));
+        const c = document.createElement('canvas'); c.width = Math.round(cw2 * scale); c.height = Math.round(ch2 * scale);
+        c.getContext('2d').drawImage(img, cx, cy, cw2, ch2, 0, 0, c.width, c.height);
+        img.src = c.toDataURL('image/png');
+      } catch (e) {}
+    }
+  }
+  document.addEventListener('load', (e) => { if (e.target.matches?.(SEL)) apply(e.target); }, true);
+  document.addEventListener('error', (e) => {
+    const img = e.target;
+    if (img.matches?.(SEL) && img.crossOrigin && !img.dataset.retry) { img.dataset.retry = '1'; img.removeAttribute('crossorigin'); img.src = img.src; }
+  }, true);
+  const sweep = () => document.querySelectorAll(SEL).forEach((img) => img.complete && apply(img));
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sweep); else sweep();
+})();

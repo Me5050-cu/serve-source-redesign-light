@@ -2,7 +2,7 @@
    a near-black canvas, full-bleed field photography and one muted loop, square corners, a strict
    12-column grid, DIN-lineage condensed display type and one vivid accent. Serve Source orange plays
    the role of NVIDIA green and appears only for action and state. Overrides on top of site.css. */
-@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Barlow+Condensed:wght@600&family=Barlow+Semi+Condensed:wght@400;500;600&display=swap');
+/* Faces are loaded per lettering kit by assets/js/theme.js (see assets/css/kits.css). */
 
 /* =====================================================================
    1. Tokens

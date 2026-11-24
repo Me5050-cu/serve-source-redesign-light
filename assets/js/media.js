@@ -28,11 +28,21 @@
   function wixSet(file, widths) { return widths.map(function (w) { return wix(file, w) + ' ' + w + 'w'; }).join(', '); }
   function img(file, widths, sizes) { return { src: wix(file, widths[widths.length - 1]), srcset: wixSet(file, widths), sizes: sizes }; }
 
+  // Wix PNG originals with enc_auto fall back to the full PNG (8-14 MB) for browsers that do not take AVIF, so every
+  // .png source asks for a forced JPEG instead (no enc_auto, a .jpg name).
+  function wixJpg(file, w) { var b = file.replace(/~mv2\.png$/, ''); return WIX + file + '/v1/fit/w_' + w + ',h_' + (w * 2) + ',q_85/' + b + '.jpg'; }
+  function imgJ(file, widths, sizes) {
+    return { src: wixJpg(file, widths[widths.length - 1]), sizes: sizes,
+      srcset: widths.map(function (w) { return wixJpg(file, w) + ' ' + w + 'w'; }).join(', ') };
+  }
+  var B44 = 'https://media.base44.com/images/public/695c704f24f26045c4d0f1c0/';
+
   var SIZES = {
     full: '100vw',
-    third: '(min-width: 1100px) 34vw, (min-width: 735px) 50vw, 100vw',
-    half: '(min-width: 821px) 50vw, 100vw',
-    tile: '(min-width: 821px) 25vw, 50vw'
+    wide: '(min-width: 1069px) 1312px, 100vw',
+    half: '(min-width: 1069px) 50vw, 100vw',
+    tile: '(min-width: 1069px) 25vw, 100vw',
+    big: '(min-width: 1069px) 30vw, 100vw'
   };
   var REEL = '4e81f7_655b7628d5c34514aeddf2e56deda672';
   var REEL_POSTER = REEL + 'f001.jpg'; // Wix's own frame from the field segment (chainsaw crew on a roof)
@@ -40,50 +50,69 @@
 
   /* ---------- Static image slots ---------- */
   // sel: the image; was: a fragment of the original src (guards against matching the wrong image); host: where the credit goes.
+  // keep: the markup already carries the photo; only the credit is registered.
   var SLOTS = [
     { slot: 'S1', sel: '.hero > img.hero-bg', was: 'f83a26_309b51cb', host: '.hero',
-      media: img('1d1de7_ca5026b0401b44548c1ba13e30469bb6~mv2.jpg', [1280, 1920, 2560], SIZES.full), focus: '46% 55%',
+      media: img('1d1de7_ca5026b0401b44548c1ba13e30469bb6~mv2.jpg', [1280, 1920, 2560], '(min-width: 1069px) 80vw, 100vw'), focus: '60% 40%',
       credit: 'Serve Source' },
+    // Intent tiles (home): photos are in the markup; one group credit line under the grid.
+    { slot: 'I1', sel: '.intent-grid .intent-media', was: '4f0518_6dcb3687', keep: true, credit: 'Serve Source' },
+    { slot: 'I2', sel: '.intent-grid .intent-media', was: 'f83a26_0f45a7fb', keep: true, credit: 'Serve Source' },
+    { slot: 'I3', sel: '.intent-grid .intent-media', was: 'f83a26_a084c13a', keep: true, credit: 'Serve Source' },
+    { slot: 'I4', sel: '.intent-grid .intent-media', was: 'kempner-assessment-team', keep: true, credit: 'Serve Source' },
     { slot: 'S2', sel: '.feature-grid > .feature:nth-child(1) .feature-media img', was: 'f83a26_309b51cb', host: '.feature-media',
-      media: img('f83a26_87f510aee7b144fb8b1f0648312ad5a3~mv2.jpeg', [640, 960, 1440], SIZES.third), focus: '50% 45%',
-      alt: 'Church and nonprofit leaders at round tables during an ATX Outreach Connection roundtable', credit: 'Serve Source' },
+      media: imgJ('4f0518_718b96c03b904e2b86c2bfa0cb1611d2~mv2.png', [960, 1600, 2400], SIZES.wide), focus: '60% 18%',
+      alt: 'A leader speaks to church and nonprofit leaders seated at round tables during an ATX Outreach Connection gathering', credit: 'Serve Source' },
     { slot: 'S3', sel: '.feature-grid > .feature:nth-child(2) .feature-media img', was: 'coordinate-response-map', host: '.feature-media',
-      media: img('1d1de7_ddb954139c64426eb551140a41d5d56b~mv2.jpeg', [640, 960, 1440], SIZES.third), focus: '50% 64%',
-      alt: 'A tablet and a monitor showing the Serve Source response map with a hurricane forecast cone over Texas', credit: 'Serve Source' },
+      keep: true, credit: 'Serve Source', label: 'Image' },
     { slot: 'S4', sel: '.feature-grid > .feature:nth-child(3) .feature-media img', was: 'f83a26_f02783dc', host: '.feature-media',
-      media: img('4f0518_6dcb3687e60e414ca1e675886d86a6c9~mv2.jpeg', [640, 960, 1440], SIZES.third), focus: '50% 50%',
-      alt: 'A forklift loads pallets of bottled water into a semi trailer while a volunteer holds the door', credit: 'Serve Source' },
+      media: { src: 'assets/img/field/gpc-trailer-chainsaw-wall.jpg' }, focus: '50% 38%',
+      alt: 'A wall of racked chainsaws inside the God\u2019s Pit Crew equipment trailer', credit: 'Serve Source / God\u2019s Pit Crew' },
     { slot: 'S5', sel: '.impact-grid > .impact:nth-child(1) .impact-media img', was: 'd9baa3d76_library-of-congress', host: '.impact-media',
-      media: img('f83a26_8f6d0540d18a411d9c28c9a188749bf5~mv2.jpg', [800, 1200, 1600, 2048], SIZES.half), focus: '50% 50%',
+      media: img('f83a26_8f6d0540d18a411d9c28c9a188749bf5~mv2.jpg', [800, 1200, 1600], SIZES.half), focus: '50% 50%',
       alt: 'Volunteers in church shirts haul a tarp heaped with storm debris across a lawn', credit: 'Serve Source' },
     { slot: 'S6', sel: '.impact-grid > .impact:nth-child(2) .impact-media img', was: 'd615a2eda', host: '.impact-media',
       media: img('f83a26_4427b63b6ba446b4ae768479ae864289~mv2.jpg', [800, 1200, 1600, 2048], SIZES.half), focus: '50% 40%',
       alt: 'Dozens of volunteers fill and stack sandbags from pallets in a parking lot', credit: 'Courtesy Serve 6.8' },
     { slot: 'S7', sel: '.layer .layer-media img', was: 'ad55d62bd_connective-layer', host: '.layer-media',
-      media: img('1d1de7_359b821f4e8d48bca1f88f69704c8ec6~mv2.jpg', [800, 1200, 1600, 2400], SIZES.half), focus: '42% 50%',
+      media: img('1d1de7_359b821f4e8d48bca1f88f69704c8ec6~mv2.jpg', [1200, 1600, 2400, 3200], '(min-width: 1069px) 60vw, 100vw'), focus: '42% 50%',
       alt: 'Two relief volunteers embrace in a storm-stripped yard while others work among broken trees', credit: 'Serve Source' },
     { slot: 'S9', sel: 'section.band > img.band-bg', was: 'd615a2eda', host: 'section.band',
-      media: { src: DVIDS + '1212/796599/2000w_q95.jpg', srcset: DVIDS + '1212/796599/1000w_q95.jpg 1000w, ' + DVIDS + '1212/796599/2000w_q95.jpg 1999w', sizes: SIZES.full },
-      focus: '50% 50%', credit: 'Photo by Ed Edahl / FEMA' },
+      media: { src: B44 + 'eee78b02f_Long-termrecoverypanelatDRRN.JPG' }, focus: '60% 50%', credit: 'Serve Source' },
+    // Rebuild header band: the rebuild crew before a newly framed building.
     { slot: 'S16', sel: 'section.band > img.band-bg', was: 'f83a26_0f45a7fb', host: 'section.band', keep: true, credit: 'Serve Source' },
-    // After the Storm mosaic (home and rebuild). Tile 1 (framing) stays. Tile 2, the posed group, becomes S10-A; tile 3, the
-    // miter saw, becomes S10-B. On home the tarp tile repeated the S5 photo, so the miter saw moves into tile 4 there instead.
-    { slot: 'S10-1', sel: '.storm .mosaic > img:nth-child(1)', was: 'f83a26_0f45a7fb', keep: true, credit: 'Serve Source' },
-    { slot: 'S10-2', sel: '.storm .mosaic > img:nth-child(2)', was: 'd615a2eda',
-      media: img('f83a26_37a5e1b942124397ae0db7ffa74f6f02~mv2.png', [400, 600, 800], SIZES.tile), focus: '50% 42%',
-      alt: 'A volunteer shakes hands with an older homeowner on the porch as an Eight Days of Hope crew looks on', credit: 'Serve Source' },
+    // After the Storm mosaic (home and rebuild). No photo repeats on a page: on home the framing photo is an intent tile,
+    // so tile 1 becomes the forklift; tile 2 (both pages) is the Just the Crumbs team; tile 4 keeps the debris tarp.
+    { slot: 'S10-1', sel: '.storm .mosaic > img:nth-child(1)', was: 'f83a26_0f45a7fb',
+      media: img('4f0518_6dcb3687e60e414ca1e675886d86a6c9~mv2.jpeg', [600, 1000, 1400], '(min-width: 1069px) 45vw, 100vw'), focus: '50% 50%', home: false,
+      alt: 'A forklift loads pallets of bottled water into a semi trailer while a volunteer holds the door', credit: 'Serve Source' },
+    { slot: 'S10-1', sel: '.storm .mosaic > img:nth-child(1)', was: 'f83a26_0f45a7fb', home: true,
+      media: imgJ('4f0518_7503bbd98e7e4a63ae566d3b00152edb~mv2.png', [600, 1000, 1400], '(min-width: 1069px) 45vw, 100vw'), focus: '72% 50%',
+      alt: 'God\u2019s Pit Crew and 516 Project volunteers stretch a blue tarp across a storm-damaged roof', credit: 'Serve Source' },
+    { slot: 'S10-2', sel: '.storm .mosaic > img:nth-child(2)', was: 'd615a2eda', home: true,
+      media: { src: 'assets/img/field/kempner-assessment-walk.jpg' }, focus: '50% 55%',
+      alt: 'Two Serve Source partners walk a storm-damaged property in Kempner, Texas, to assess the work', credit: 'Serve Source' },
+    { slot: 'S10-2', sel: '.storm .mosaic > img:nth-child(2)', was: 'd615a2eda', home: false,
+      media: imgJ('f83a26_a0ae5b7e01984582923621095d165b34~mv2.png', [500, 800, 1100], SIZES.tile), focus: '50% 45%',
+      alt: 'The Just the Crumbs Ministries disaster relief team in front of their trailer', credit: 'Courtesy Just the Crumbs Ministries', note: 'team photo courtesy Just the Crumbs Ministries' },
     { slot: 'S10-3', sel: '.storm .mosaic > img:nth-child(3)', was: 'f83a26_f02783dc',
       media: img('1d1de7_6c8202a40e8a4922af5c7c890244495f~mv2.jpg', [400, 700, 1000], SIZES.tile), focus: '45% 40%',
       alt: 'A Mercy Chefs volunteer at work in a field kitchen', credit: 'Serve Source' },
     { slot: 'S10-4', sel: '.storm .mosaic > img:nth-child(4)', was: 'f83a26_8f6d0540', home: true,
-      media: img('f83a26_f02783dcb08644a5a4b6ee94fbe99b8b~mv2.jpeg', [400, 700, 1000], SIZES.tile), focus: '50% 50%',
-      alt: 'A volunteer cuts lumber on a rebuild project', credit: 'Serve Source' },
-    { slot: 'S10-4', sel: '.storm .mosaic > img:nth-child(4)', was: 'f83a26_8f6d0540', home: false, keep: true, credit: 'Serve Source' },
+      media: imgJ('f83a26_bff35aead7da496f8b1e82966ef2c307~mv2.png', [400, 700, 1000], SIZES.tile), focus: '50% 55%',
+      alt: 'The Serve Source mobile shower trailer parked on a grass lot', credit: 'Serve Source' },
+    { slot: 'S10-4', sel: '.storm .mosaic > img:nth-child(4)', was: 'f83a26_8f6d0540', home: false,
+      media: img('f83a26_8f6d0540d18a411d9c28c9a188749bf5~mv2.jpg', [400, 700, 1000], SIZES.tile), focus: '50% 50%',
+      alt: 'Volunteers in church shirts haul a tarp heaped with storm debris across a lawn', credit: 'Serve Source' },
+    // Inner page heroes: photos are in the markup.
+    { slot: 'S18', sel: '.page-hero > img.page-hero-bg', was: '1d1de7_9d816c96', host: '.page-hero', keep: true, credit: 'Representative photo \u00b7 Serve Source' },
+    { slot: 'S19', sel: '.page-hero > img.page-hero-bg', was: 'f83a26_4427b63b', host: '.page-hero', keep: true, credit: 'Courtesy Serve 6.8' },
+    { slot: 'S20', sel: '.net-hero-media > img', was: 'eee78b02f_Long-term', host: '.net-hero-media', keep: true, credit: 'Serve Source' },
     // Closing CTA band: the poster is a frame of the loop; the loop itself is added in setupLoop().
     { slot: 'S11', sel: 'section.cta > img.band-bg', was: 'f83a26_309b51cb', host: 'section.cta', video: true,
       media: { src: WIX + REEL_POSTER + '/v1/fill/w_1920,h_1080,al_c,q_80,enc_auto/' + REEL_POSTER,
         srcset: WIX + REEL_POSTER + '/v1/fill/w_960,h_540,al_c,q_80,enc_auto/' + REEL_POSTER + ' 960w, ' +
-          WIX + REEL_POSTER + '/v1/fill/w_1920,h_1080,al_c,q_80,enc_auto/' + REEL_POSTER + ' 1920w', sizes: SIZES.full },
+          WIX + REEL_POSTER + '/v1/fill/w_1920,h_1080,al_c,q_80,enc_auto/' + REEL_POSTER + ' 1920w', sizes: '(max-width: 734px) 400vw, 100vw' },
       focus: '50% 40%', credit: 'Serve Source', label: 'Video' }
   ];
 
@@ -98,7 +127,7 @@
     window.SS_PHOTO_OVERRIDES = Object.assign({}, window.SS_PHOTO_OVERRIDES, {
       // S8: generic per-type fallbacks (used only when a disaster has no image of its own and no photos.json entry).
       'type:Flooding': { src: WIX + 'f83a26_5e6091a87fd04f15952cddadc0542621f000.jpg', credit: 'Representative photo · Serve Source', license: 'Serve Source', representative: true },
-      'type:Hurricane': rep(DVIDS_HURRICANE, 'FEMA / K.C. Wilsey'),
+      'type:Hurricane': rep(WIX + '1d1de7_45037295a69e483299b3a2e2e5712b73~mv2.jpg/v1/fit/w_1920,h_3840,q_85,enc_auto/1d1de7_45037295a69e483299b3a2e2e5712b73~mv2.jpg', 'Serve Source'),
       'type:Tornado': rep('https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Moore%2C_Okla.%2C_June_7%2C_2013_--_Southern_Baptist_Disaster_Relief_%28SBDR%29_volunteers_demolish_remnants_of_destroyed_homes_and_push_debris_to_the_street._SBDR_is_an_important_partner_wit_-_DPLA_-_f73588b8850fd9c9bff69b9dcfcd23a0.jpg/960px-thumbnail.jpg', 'FEMA / George Armstrong'),
       'type:Storm': rep(DVIDS_SAWYERS, 'U.S. Army photo by 2nd Lt. Jacob Moir'),
       'type:Wind Storm': rep(DVIDS_SAWYERS, 'U.S. Army photo by 2nd Lt. Jacob Moir'),
@@ -225,25 +254,35 @@
     }
     refreshGroupCredits();
   }
-  // One credit row per mosaic, listing each tile's credit in order (layout-independent, so themes may rearrange tiles).
+  // One credit row per group (the After the Storm mosaic, the intent tiles), listing each photo's credit in order.
+  // The mosaic keeps its row inside the grid (it spans the grid); the intent grid gets it as the next sibling.
   function refreshGroupCredits() {
     try {
-      var mosaics = document.querySelectorAll('.storm .mosaic');
-      for (var i = 0; i < mosaics.length; i++) {
-        var m = mosaics[i], tiles = m.querySelectorAll(':scope > img[data-media-slot]'), parts = [];
+      var groups = document.querySelectorAll('.storm .mosaic, .intent-grid');
+      for (var i = 0; i < groups.length; i++) {
+        var m = groups[i], inside = m.classList.contains('mosaic'), tiles = m.querySelectorAll('img[data-media-slot]'), parts = [];
         for (var j = 0; j < tiles.length; j++) {
           if (tiles[j].hasAttribute('data-media-failed')) continue;
-          parts.push(tiles[j].getAttribute('data-credit'));
+          var sl = tiles[j].getAttribute('data-media-slot'), note = null;
+          for (var q = 0; q < SLOTS.length; q++) if (SLOTS[q].slot === sl && (SLOTS[q].home === undefined || SLOTS[q].home === isHome)) { note = SLOTS[q].note || null; break; }
+          parts.push({ credit: tiles[j].getAttribute('data-credit'), note: note });
         }
-        var c = m.querySelector(':scope > .media-credit--group');
-        if (!parts.length) { if (c) m.removeChild(c); continue; }
+        var c = inside ? m.querySelector(':scope > .media-credit--group') : (m.nextElementSibling && m.nextElementSibling.classList.contains('media-credit--group') ? m.nextElementSibling : null);
+        if (!parts.length) { if (c && c.parentNode) c.parentNode.removeChild(c); continue; }
         if (!c) {
           c = document.createElement('p');
           c.className = 'media-credit media-credit--group';
-          c.setAttribute('data-slot', 'S10');
-          m.appendChild(c);
+          c.setAttribute('data-slot', inside ? 'S10' : 'I');
+          if (inside) m.appendChild(c); else m.parentNode.insertBefore(c, m.nextSibling);
         }
-        var text = 'Photos: ' + parts.join(' · ');
+        // One name per owner: "Photos: Serve Source; team photo courtesy Just the Crumbs Ministries".
+        var names = [];
+        for (var n = 0; n < parts.length; n++) {
+          var nm = parts[n].credit === 'Serve Source' ? 'Serve Source' : (parts[n].note || parts[n].credit);
+          if (names.indexOf(nm) < 0) names.push(nm);
+        }
+        names.sort(function (x, y) { return (y === 'Serve Source') - (x === 'Serve Source'); });
+        var text = (names.length > 1 || parts.length > 1 ? 'Photos: ' : 'Photo: ') + names.join('; ');
         if (c.textContent !== text) c.textContent = text;
       }
     } catch (e) {}
